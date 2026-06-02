@@ -1,0 +1,396 @@
+import type { Fortress, FortressComment, FortressSubmission } from '@hayastani/shared'
+
+export const seedFortresses: Fortress[] = [
+  {
+    id: 'amberd',
+    slug: 'amberd',
+    name: {
+      hy: 'Ամբերդ',
+      ru: 'Амберд',
+      en: 'Amberd',
+    },
+    alternativeNames: ['Anberd', 'Ամբերդի ամրոց'],
+    scope: 'republic-of-armenia',
+    coordinates: { lat: 40.3875, lng: 44.2314 },
+    coordinateAccuracy: 'exact',
+    marz: { hy: 'Արագածոտն', ru: 'Арагацотн', en: 'Aragatsotn' },
+    nearestSettlement: { hy: 'Բյուրական', ru: 'Бюракан', en: 'Byurakan' },
+    summary: {
+      hy: 'Միջնադարյան ամրոց Արագածի լանջերում՝ հայտնի ուղևորության և ուսումնասիրության օբյեկտ։',
+      ru: 'Средневековая крепость на склонах Арагаца, один из самых известных объектов для путешествий и исследований.',
+      en: 'A medieval fortress on the slopes of Aragats, one of the best-known travel and research sites.',
+    },
+    history: {
+      hy: 'Ամբերդը հաճախ ներկայացվում է որպես VII-XIII դարերի պաշտպանական համալիր։',
+      ru: 'Амберд обычно описывается как оборонительный комплекс VII-XIII веков.',
+      en: 'Amberd is usually described as a defensive complex of the 7th-13th centuries.',
+    },
+    foundation: 'VII-XIII centuries',
+    period: 'medieval',
+    condition: 'ruins',
+    type: 'fortress',
+    accessibility: 'moderate',
+    routeHint: {
+      hy: 'Բյուրականից դեպի Արագած, ավտոմեքենայով կամ ուղեկցությամբ։',
+      ru: 'Из Бюракана в сторону Арагаца, на автомобиле или с проводником.',
+      en: 'From Byurakan toward Aragats, by car or with a guide.',
+    },
+    altitudeMeters: 2300,
+    evidenceLevel: 'verified',
+    features: [
+      {
+        hy: 'Լավ պահպանված պարիսպներ և դիտապատ',
+        ru: 'Хорошо сохранившиеся стены и обзорная точка',
+        en: 'Well-preserved walls and a lookout point',
+      },
+    ],
+    warnings: [
+      {
+        hy: 'Լեռնային ճանապարհը կարող է լինել սառած կամ սայթաքելի',
+        ru: 'Горная дорога может быть скользкой',
+        en: 'Mountain road can be slippery',
+      },
+    ],
+    relatedPlaces: [
+      { hy: 'Վահանավանք', ru: 'Ваханаванк', en: 'Vahramashen Church' },
+    ],
+    photos: [
+      {
+        id: 'amberd-1',
+        url: 'https://images.unsplash.com/photo-1605647540924-852290f6b0b5?auto=format&fit=crop&w=1200&q=80',
+        author: 'Demo archive',
+        caption: {
+          hy: 'Ամբերդի ամրոցային համալիր',
+          ru: 'Крепостной комплекс Амберда',
+          en: 'Amberd fortress complex',
+        },
+        isPrimary: true,
+        status: 'published',
+      },
+    ],
+    sources: [
+      {
+        id: 'amberd-book',
+        type: 'book',
+        title: 'Unknown Armenia: Places of Power',
+        author: 'Harutyun Hakobyan',
+        language: 'en',
+      },
+      {
+        id: 'amberd-social',
+        type: 'social',
+        title: 'Reel about Amberd',
+        url: 'https://www.instagram.com/',
+        language: 'ru',
+      },
+    ],
+    status: 'published',
+    updatedAt: '2026-05-01',
+  },
+  {
+    id: 'mayraberd',
+    slug: 'mayraberd',
+    name: {
+      hy: 'Մայրաբերդ',
+      ru: 'Майраберд',
+      en: 'Mayraberd',
+    },
+    alternativeNames: ['Askeran fortress', 'Mother Fortress'],
+    scope: 'artsakh',
+    coordinates: { lat: 39.9367, lng: 46.8233 },
+    coordinateAccuracy: 'approximate',
+    marz: { hy: 'Ասկերան', ru: 'Аскеран', en: 'Askeran' },
+    nearestSettlement: { hy: 'Ասկերան', ru: 'Аскеран', en: 'Askeran' },
+    summary: {
+      hy: 'Միջնադարյան ամրոց, որը հաճախ ներկայացվում է որպես «մայրաբերդ»։',
+      ru: 'Средневековая крепость, часто описываемая как «мать-крепость».',
+      en: 'A medieval fortress often described as the "mother fortress".',
+    },
+    history: {
+      hy: 'Մայրաբերդը հաճախ կապվում է Ասկերանի պաշտպանական համակարգի հետ։',
+      ru: 'Майраберд часто связывают с оборонительной системой Аскерана.',
+      en: 'Mayraberd is often linked to the defensive system of Askeran.',
+    },
+    foundation: 'XVI century and earlier layers',
+    period: 'late-medieval',
+    condition: 'ruins',
+    type: 'citadel',
+    accessibility: 'moderate',
+    routeHint: {
+      hy: 'Ասկերանից դեպի ամրոցի բարձրադաշտը, տեղական ուղղումներով։',
+      ru: 'Из Аскерана к плато крепости, по местным направлениям.',
+      en: 'From Askeran toward the fortress plateau using local directions.',
+    },
+    evidenceLevel: 'partially-verified',
+    features: [
+      {
+        hy: 'Լայն տեսադաշտ և պաշտպանական դիրք',
+        ru: 'Широкий обзор и оборонительное положение',
+        en: 'Wide views and a defensive position',
+      },
+    ],
+    warnings: [
+      {
+        hy: 'Տվյալները և մատչելիությունը պահանջում են լրացուցիչ ստուգում',
+        ru: 'Данные и доступность требуют дополнительной проверки',
+        en: 'Data and accessibility require additional verification',
+      },
+    ],
+    relatedPlaces: [{ hy: 'Ասկերան', ru: 'Аскеран', en: 'Askeran' }],
+    photos: [
+      {
+        id: 'mayraberd-1',
+        url: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80',
+        author: 'Demo archive',
+        caption: {
+          hy: 'Մայրաբերդի ամրոցային բլուր',
+          ru: 'Крепостной холм Майраберда',
+          en: 'Mayraberd fortress hill',
+        },
+        isPrimary: true,
+        status: 'published',
+      },
+    ],
+    sources: [
+      {
+        id: 'mayraberd-book',
+        type: 'book',
+        title: 'Неизведанный Арцах',
+        author: 'Harutyun Hakobyan',
+        language: 'ru',
+      },
+      {
+        id: 'mayraberd-video',
+        type: 'video',
+        title: 'Fortress video material',
+        url: 'https://www.youtube.com/',
+        language: 'ru',
+      },
+    ],
+    status: 'published',
+    updatedAt: '2026-05-10',
+  },
+  {
+    id: 'hidden-lori',
+    slug: 'hidden-lori-fortress',
+    name: {
+      hy: 'Լոռու անհայտ բերդ',
+      ru: 'Малоизвестная крепость Лори',
+      en: 'Hidden Lori fortress',
+    },
+    alternativeNames: ['Local hill fortress'],
+    scope: 'republic-of-armenia',
+    coordinates: { lat: 41.05, lng: 44.62 },
+    coordinateAccuracy: 'unverified',
+    marz: { hy: 'Լոռի', ru: 'Лори', en: 'Lori' },
+    nearestSettlement: { hy: 'Տեղական գյուղ', ru: 'Местное село', en: 'Local village' },
+    summary: {
+      hy: 'Օրինակային քարտեզագրված, բայց դեռ ստուգման կարիք ունեցող բերդ։',
+      ru: 'Пример крепости, уже добавленной на карту, но еще требующей проверки.',
+      en: 'An example fortress already on the map but still needing verification.',
+    },
+    history: {
+      hy: 'Տեղական բնակիչները նշում են ամրացված բլրի հետքեր, սակայն աղբյուրները սահմանափակ են։',
+      ru: 'Местные жители указывают на следы укрепленного холма, но источники ограничены.',
+      en: 'Locals point to traces of a fortified hill, but sources are limited.',
+    },
+    foundation: 'Unknown',
+    period: 'unknown',
+    condition: 'poorly-studied',
+    type: 'fortified-settlement',
+    accessibility: 'hard',
+    routeHint: {
+      hy: 'Միայն տեղական ուղղումներով և քայլով։',
+      ru: 'Только по местным указаниям и пешком.',
+      en: 'Only with local directions and on foot.',
+    },
+    evidenceLevel: 'oral',
+    features: [
+      {
+        hy: 'Տեղական անուն, որը դեռ չի հաստատվել',
+        ru: 'Локальное название, которое еще не подтверждено',
+        en: 'A local name that is not yet confirmed',
+      },
+    ],
+    warnings: [
+      {
+        hy: 'Չօգտագործել որպես վերջնական նավիգացիոն հրահանգ',
+        ru: 'Не использовать как окончательную навигацию',
+        en: 'Do not use as final navigation guidance',
+      },
+    ],
+    relatedPlaces: [],
+    photos: [
+      {
+        id: 'lori-1',
+        url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80',
+        author: 'Community draft',
+        caption: {
+          hy: 'Նախնական լուսանկար',
+          ru: 'Предварительное фото',
+          en: 'Preliminary photo',
+        },
+        isPrimary: true,
+        status: 'review',
+      },
+    ],
+    sources: [
+      {
+        id: 'lori-oral',
+        type: 'oral',
+        title: 'Village testimony',
+        language: 'hy',
+        editorNote: 'Marked as oral testimony until a second source appears.',
+      },
+    ],
+    status: 'published',
+    updatedAt: '2026-05-18',
+  },
+  {
+    id: 'ani-walls',
+    slug: 'ani-defensive-walls',
+    name: {
+      hy: 'Անիի պաշտպանական համալիր',
+      ru: 'Оборонительный комплекс Ани',
+      en: 'Ani defensive complex',
+    },
+    alternativeNames: ['City of Ani fortifications'],
+    scope: 'historical-armenia',
+    coordinates: { lat: 40.507, lng: 43.573 },
+    coordinateAccuracy: 'exact',
+    marz: { hy: 'Պատմական Անի', ru: 'Историческая Ани', en: 'Historical Ani' },
+    nearestSettlement: { hy: 'Անի', ru: 'Ани', en: 'Ani' },
+    summary: {
+      hy: 'Պատմական Արմավիրի կարևոր ամրացված քաղաքային օբյեկտ։',
+      ru: 'Важный укрепленный городской объект исторической Армении.',
+      en: 'An important fortified urban site of historical Armenia.',
+    },
+    history: {
+      hy: 'Անին հաճախ ներկայացվում է որպես միջնադարյան քաղաքային ամրացումների օրինակ։',
+      ru: 'Ани часто описывается как пример средневековых городских укреплений.',
+      en: 'Ani is often described as an example of medieval urban fortifications.',
+    },
+    foundation: 'X-XI centuries',
+    period: 'medieval',
+    condition: 'fragments',
+    type: 'defensive-wall',
+    accessibility: 'easy',
+    routeHint: {
+      hy: 'Տուրիստական ուղղություններով մոտ մուտքի գոտում։',
+      ru: 'По туристическим маршрутам в зоне посещения.',
+      en: 'Via tourist routes in the visitation zone.',
+    },
+    evidenceLevel: 'verified',
+    features: [
+      {
+        hy: 'Քաղաքային պարիսպներ և դարպասներ',
+        ru: 'Городские стены и ворота',
+        en: 'City walls and gates',
+      },
+    ],
+    warnings: [],
+    relatedPlaces: [{ hy: 'Անիի տաճարներ', ru: 'Храмы Ани', en: 'Churches of Ani' }],
+    photos: [
+      {
+        id: 'ani-1',
+        url: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=1200&q=80',
+        author: 'Demo archive',
+        caption: {
+          hy: 'Անիի պարիսպային հատված',
+          ru: 'Участок стен Ани',
+          en: 'Section of the walls of Ani',
+        },
+        isPrimary: true,
+        status: 'published',
+      },
+    ],
+    sources: [
+      {
+        id: 'ani-academic',
+        type: 'academic',
+        title: 'Historical geography of Armenia',
+        language: 'ru',
+      },
+    ],
+    status: 'published',
+    updatedAt: '2026-05-22',
+  },
+]
+
+export const seedComments: FortressComment[] = [
+  {
+    id: 'c1',
+    fortressId: 'hidden-lori',
+    author: 'VillageGuide',
+    body: 'Locals call the hill "Berdi blur"; coordinates may be 300-400 meters off.',
+    status: 'published',
+    createdAt: '2026-05-20',
+  },
+]
+
+export const seedSubmissions: FortressSubmission[] = [
+  {
+    id: 'sub-1',
+    submittedBy: 'TravelerAnna',
+    status: 'in-review',
+    submitterNote: 'Found during a hike near a Lori village. Elderly residents confirmed the local name.',
+    createdAt: '2026-05-25',
+    proposedFortress: {
+      id: 'submitted-kotayk',
+      slug: 'kotayk-hill-fort',
+      name: {
+        hy: 'Կոտայքի բլրային բերդ',
+        ru: 'Котайкская холмовая крепость',
+        en: 'Kotayk hill fortress',
+      },
+      alternativeNames: ['Hill fort above the gorge'],
+      scope: 'republic-of-armenia',
+      coordinates: { lat: 40.42, lng: 44.75 },
+      coordinateAccuracy: 'approximate',
+      marz: { hy: 'Կոտայք', ru: 'Котайк', en: 'Kotayk' },
+      nearestSettlement: { hy: 'Տեղական գյուղ', ru: 'Местное село', en: 'Local village' },
+      summary: {
+        hy: 'Նոր առաջարկված բերդ՝ ստուգման համար։',
+        ru: 'Новая предложенная крепость для проверки.',
+        en: 'A newly proposed fortress awaiting review.',
+      },
+      history: {
+        hy: 'Տեղացիները նշում են միջնադարյան պաշտպանական կառույց։',
+        ru: 'Местные жители указывают на средневековое оборонительное сооружение.',
+        en: 'Locals mention a medieval defensive structure.',
+      },
+      foundation: 'Medieval, unverified',
+      period: 'medieval',
+      condition: 'poorly-studied',
+      type: 'fortress',
+      accessibility: 'hard',
+      routeHint: {
+        hy: 'Միայն հետիոտն ճանապարհով',
+        ru: 'Только пешком',
+        en: 'Footpath only',
+      },
+      evidenceLevel: 'oral',
+      features: [],
+      warnings: [
+        {
+          hy: 'Կոորդինատները պետք է ստուգվեն',
+          ru: 'Координаты нужно проверить',
+          en: 'Coordinates need verification',
+        },
+      ],
+      relatedPlaces: [],
+      photos: [],
+      sources: [
+        {
+          id: 'sub-social',
+          type: 'social',
+          title: 'Possible reel reference',
+          url: 'https://www.instagram.com/',
+          language: 'ru',
+        },
+      ],
+      status: 'review',
+      updatedAt: '2026-05-25',
+    },
+  },
+]

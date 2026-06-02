@@ -1,0 +1,49 @@
+{
+  "brand": "Hayastani Berdry",
+  "tagline": "A public registry of Armenian fortresses with a map, sources, and community contributions",
+  "nav": {
+    "map": "Map",
+    "catalog": "Catalog",
+    "submit": "Submit",
+    "about": "About",
+    "rules": "Rules",
+    "admin": "Admin",
+    "login": "Log in",
+    "register": "Sign up",
+    "logout": "Log out"
+  },
+  "search": "Search fortress",
+  "filters": "Filters",
+  "allScopes": "All regions",
+  "details": "Details",
+  "sources": "Sources",
+  "comments": "Comments",
+  "route": "How to get there",
+  "features": "Features",
+  "warnings": "Warnings",
+  "history": "History",
+  "submitForm": {
+    "title": "Submit a fortress",
+    "intro": "Fill in the details. An admin will review before publication.",
+    "note": "How do you know about this place?",
+    "send": "Send for moderation"
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "registerTitle": "Sign up",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name"
+  },
+  "admin": {
+    "title": "Admin panel",
+    "submissions": "Submissions",
+    "fortresses": "Fortresses",
+    "audit": "Audit log",
+    "accept": "Publish",
+    "reject": "Reject",
+    "needsChanges": "Request changes"
+  },
+  "empty": "Nothing found",
+  "loading": "Loading..."
+}

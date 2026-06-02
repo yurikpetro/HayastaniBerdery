@@ -1,0 +1,21 @@
+{
+  "name": "hayastani-berdry",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @hayastani/web",
+    "dev:api": "npm run dev -w @hayastani/api",
+    "dev:all": "concurrently \"npm run dev:api\" \"npm run dev\"",
+    "build": "npm run build -w @hayastani/shared && npm run build -w @hayastani/api && npm run build -w @hayastani/web",
+    "db:migrate": "npm run db:migrate -w @hayastani/api",
+    "db:seed": "npm run db:seed -w @hayastani/api",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

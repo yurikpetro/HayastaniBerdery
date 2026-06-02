@@ -1,0 +1,230 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  user
+  moderator
+  admin
+}
+
+enum GeographicScope {
+  republic_of_armenia
+  artsakh
+  historical_armenia
+}
+
+enum PublicationStatus {
+  draft
+  review
+  published
+  rejected
+  archived
+}
+
+enum CoordinateAccuracy {
+  exact
+  approximate
+  unverified
+}
+
+enum EvidenceLevel {
+  verified
+  partially_verified
+  oral
+  needs_research
+}
+
+enum AccessibilityLevel {
+  easy
+  moderate
+  hard
+  guide_required
+}
+
+enum FortressCondition {
+  preserved
+  ruins
+  fragments
+  poorly_studied
+  inaccessible
+}
+
+enum HistoricalPeriod {
+  bronze_age
+  urartian
+  antique
+  early_medieval
+  medieval
+  late_medieval
+  unknown
+}
+
+enum FortressType {
+  fortress
+  fortified_settlement
+  citadel
+  tower
+  fortified_monastery
+  defensive_wall
+}
+
+enum SourceType {
+  book
+  article
+  academic
+  website
+  social
+  video
+  oral
+  archive
+}
+
+enum SubmissionStatus {
+  new
+  in_review
+  needs_changes
+  accepted
+  rejected
+}
+
+enum CommentStatus {
+  published
+  hidden
+  review
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         UserRole @default(user)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  comments    FortressComment[]
+  submissions FortressSubmission[]
+  auditLogs   AuditLog[]
+}
+
+model Fortress {
+  id                 String             @id @default(cuid())
+  slug               String             @unique
+  scope              GeographicScope
+  lat                Float
+  lng                Float
+  coordinateAccuracy CoordinateAccuracy
+  foundation         String
+  period             HistoricalPeriod
+  condition          FortressCondition
+  type               FortressType
+  accessibility      AccessibilityLevel
+  altitudeMeters     Int?
+  evidenceLevel      EvidenceLevel
+  alternativeNames   String[]
+  status             PublicationStatus  @default(draft)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  translations FortressTranslation[]
+  photos       FortressPhoto[]
+  sources      FortressSource[]
+  comments     FortressComment[]
+  submissions  FortressSubmission[] @relation("PublishedFortress")
+  auditLogs    AuditLog[]
+}
+
+model FortressTranslation {
+  id                String   @id @default(cuid())
+  fortressId        String
+  locale            String
+  name              String
+  summary           String   @db.Text
+  history           String   @db.Text
+  marz              String
+  nearestSettlement String
+  routeHint         String   @db.Text
+  features          Json
+  warnings          Json
+  relatedPlaces     Json
+
+  fortress Fortress @relation(fields: [fortressId], references: [id], onDelete: Cascade)
+
+  @@unique([fortressId, locale])
+}
+
+model FortressPhoto {
+  id         String            @id @default(cuid())
+  fortressId String
+  url        String
+  author     String
+  takenAt    String?
+  captionHy  String            @default("")
+  captionRu  String            @default("")
+  captionEn  String            @default("")
+  isPrimary  Boolean           @default(false)
+  status     PublicationStatus @default(published)
+  createdAt  DateTime          @default(now())
+
+  fortress Fortress @relation(fields: [fortressId], references: [id], onDelete: Cascade)
+}
+
+model FortressSource {
+  id         String     @id @default(cuid())
+  fortressId String
+  type       SourceType
+  title      String
+  author     String?
+  url        String?
+  language   String     @default("ru")
+  editorNote String?
+
+  fortress Fortress @relation(fields: [fortressId], references: [id], onDelete: Cascade)
+}
+
+model FortressComment {
+  id         String        @id @default(cuid())
+  fortressId String
+  userId     String?
+  authorName String
+  body       String        @db.Text
+  status     CommentStatus @default(published)
+  createdAt  DateTime      @default(now())
+
+  fortress Fortress @relation(fields: [fortressId], references: [id], onDelete: Cascade)
+  user     User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model FortressSubmission {
+  id              String           @id @default(cuid())
+  userId          String?
+  submittedByName String
+  status          SubmissionStatus @default(new)
+  submitterNote   String           @db.Text
+  moderatorNote   String?
+  payload         Json
+  publishedId     String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  publishedFortress Fortress? @relation("PublishedFortress", fields: [publishedId], references: [id], onDelete: SetNull)
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  fortressId String?
+  userId     String?
+  action     String
+  details    Json?
+  createdAt  DateTime @default(now())
+
+  fortress Fortress? @relation(fields: [fortressId], references: [id], onDelete: SetNull)
+  user     User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
