@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet'
 import type { Fortress } from '@hayastani/shared'
@@ -52,19 +52,25 @@ export function SubmitPage() {
 
   if (!user) {
     return (
-      <div className="rounded-2xl border border-stone-200 bg-white p-8 text-center">
-        <p className="mb-4">{t('nav.login')} required</p>
-        <a href="/login" className="rounded-full bg-terracotta px-5 py-2 text-white">
+      <div className="mx-auto max-w-2xl rounded-2xl border border-white/60 bg-white/85 p-8 text-center shadow-xl shadow-stone-900/10 backdrop-blur-md">
+        <h2 className="text-2xl font-bold text-stone-900">{t('submitForm.signInTitle')}</h2>
+        <p className="mx-auto mt-3 max-w-md text-stone-600">{t('submitForm.signInIntro')}</p>
+        <Link
+          to="/login"
+          className="mt-6 inline-flex rounded-full bg-terracotta px-6 py-2.5 font-medium text-white transition hover:bg-terracotta/90"
+        >
           {t('nav.login')}
-        </a>
+        </Link>
       </div>
     )
   }
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <h2 className="text-3xl font-bold">{t('submitForm.title')}</h2>
-      <p className="text-stone-600">{t('submitForm.intro')}</p>
+      <div className="rounded-2xl border border-white/60 bg-white/80 p-6 shadow-lg shadow-stone-900/10 backdrop-blur-md">
+        <h2 className="text-3xl font-bold text-stone-900">{t('submitForm.title')}</h2>
+        <p className="mt-2 text-stone-600">{t('submitForm.intro')}</p>
+      </div>
 
       <div className="flex gap-2 text-sm">
         {[1, 2, 3].map((n) => (
@@ -78,12 +84,12 @@ export function SubmitPage() {
       </div>
 
       {step === 1 ? (
-        <div className="space-y-3 rounded-2xl border border-stone-200 bg-white p-6">
+        <div className="space-y-3 rounded-2xl border border-white/60 bg-white/85 p-6 shadow-xl shadow-stone-900/10 backdrop-blur-md">
           {(['hy', 'ru', 'en'] as const).map((locale) => (
             <label key={locale} className="block text-sm">
               Name ({locale.toUpperCase()})
               <input
-                className="mt-1 w-full rounded-xl border px-3 py-2"
+                className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
                 value={draft.name[locale]}
                 onChange={(e) =>
                   setDraft({ ...draft, name: { ...draft.name, [locale]: e.target.value } })
@@ -94,7 +100,7 @@ export function SubmitPage() {
           <label className="block text-sm">
             Summary (RU)
             <textarea
-              className="mt-1 w-full rounded-xl border px-3 py-2"
+              className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
               rows={3}
               value={draft.summary.ru}
               onChange={(e) =>
@@ -113,7 +119,7 @@ export function SubmitPage() {
       ) : null}
 
       {step === 2 ? (
-        <div className="space-y-3 rounded-2xl border border-stone-200 bg-white p-6">
+        <div className="space-y-3 rounded-2xl border border-white/60 bg-white/85 p-6 shadow-xl shadow-stone-900/10 backdrop-blur-md">
           <p className="text-sm text-stone-600">Click on the map to set coordinates</p>
           <MapContainer center={[draft.coordinates.lat, draft.coordinates.lng]} zoom={9} className="h-72 rounded-xl">
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -141,11 +147,11 @@ export function SubmitPage() {
       ) : null}
 
       {step === 3 ? (
-        <div className="space-y-3 rounded-2xl border border-stone-200 bg-white p-6">
+        <div className="space-y-3 rounded-2xl border border-white/60 bg-white/85 p-6 shadow-xl shadow-stone-900/10 backdrop-blur-md">
           <label className="block text-sm">
             {t('submitForm.note')}
             <textarea
-              className="mt-1 w-full rounded-xl border px-3 py-2"
+              className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
               rows={3}
               value={note}
               onChange={(e) => setNote(e.target.value)}
@@ -154,7 +160,7 @@ export function SubmitPage() {
           <label className="block text-sm">
             Social / reel URL
             <input
-              className="mt-1 w-full rounded-xl border px-3 py-2"
+              className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
               value={socialUrl}
               onChange={(e) => setSocialUrl(e.target.value)}
             />

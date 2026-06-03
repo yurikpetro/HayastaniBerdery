@@ -3,21 +3,36 @@ import type { Layer } from 'leaflet'
 import { useMap } from 'react-leaflet'
 import { googleMapsApiKey } from './mapEnv'
 import { ensureGoogleMutantPlugin } from './googleMutantPlugin'
+import type { Locale } from '@hayastani/shared'
 import type { GoogleMutantType } from './mapLayers'
 
-let googleScriptPromise: Promise<void> | null = null
+const googleLangByLocale: Record<Locale, string> = {
+  hy: 'hy',
+  ru: 'ru',
+  en: 'en',
+}
 
-function loadGoogleMapsScript(): Promise<void> {
+let googleScriptPromise: Promise<void> | null = null
+let loadedGoogleLang: string | null = null
+
+function loadGoogleMapsScript(language: string): Promise<void> {
   if (typeof window === 'undefined') return Promise.reject()
-  if (window.google?.maps) return Promise.resolve()
-  if (googleScriptPromise) return googleScriptPromise
+  if (window.google?.maps && loadedGoogleLang === language) return Promise.resolve()
 
   googleScriptPromise = new Promise((resolve, reject) => {
     const script = document.createElement('script')
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(googleMapsApiKey)}`
+    const params = new URLSearchParams({
+      key: googleMapsApiKey,
+      language,
+      region: 'AM',
+    })
+    script.src = `https://maps.googleapis.com/maps/api/js?${params.toString()}`
     script.async = true
     script.defer = true
-    script.onload = () => resolve()
+    script.onload = () => {
+      loadedGoogleLang = language
+      resolve()
+    }
     script.onerror = () => reject(new Error('Failed to load Google Maps'))
     document.head.appendChild(script)
   })
@@ -25,14 +40,21 @@ function loadGoogleMapsScript(): Promise<void> {
   return googleScriptPromise
 }
 
-export function GoogleMutantLayer({ type }: { type: GoogleMutantType }) {
+export function GoogleMutantLayer({
+  type,
+  locale,
+}: {
+  type: GoogleMutantType
+  locale: Locale
+}) {
   const map = useMap()
   const [ready, setReady] = useState(Boolean(window.google?.maps))
 
   useEffect(() => {
     if (!googleMapsApiKey) return
     let cancelled = false
-    loadGoogleMapsScript()
+    const language = googleLangByLocale[locale] ?? 'en'
+    loadGoogleMapsScript(language)
       .then(() => {
         if (!cancelled) setReady(true)
       })
@@ -42,7 +64,7 @@ export function GoogleMutantLayer({ type }: { type: GoogleMutantType }) {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [locale])
 
   useEffect(() => {
     if (!ready || !googleMapsApiKey) return

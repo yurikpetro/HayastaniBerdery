@@ -1,8 +1,12 @@
-import { hasGoogleMaps, hasYandexMaps, yandexMapsApiKey } from './mapEnv'
+import { hasGoogleMaps, hasMaptiler, hasYandexMaps, yandexMapsApiKey } from './mapEnv'
 
 export type MapLayerId =
   | 'osm-standard'
   | 'osm-topo'
+  | 'maptiler-streets'
+  | 'maptiler-hybrid'
+  | 'maptiler-outdoor'
+  | 'maptiler-satellite'
   | 'google-roadmap'
   | 'google-satellite'
   | 'google-hybrid'
@@ -13,9 +17,11 @@ export type MapLayerId =
   | 'esri-hybrid'
   | 'carto-voyager'
 
-export type MapLayerGroup = 'osm' | 'google' | 'yandex' | 'satellite' | 'other'
+export type MapLayerGroup = 'maptiler' | 'osm' | 'google' | 'yandex' | 'satellite' | 'other'
 
-export type MapLayerProvider = 'tile' | 'google' | 'yandex'
+export type MapLayerProvider = 'tile' | 'google' | 'yandex' | 'maptiler'
+
+export type MapTilerStyleId = 'streets' | 'hybrid' | 'outdoor' | 'satellite'
 
 export type GoogleMutantType = 'roadmap' | 'satellite' | 'hybrid'
 
@@ -38,6 +44,7 @@ export interface MapLayerConfig {
   overlay?: MapLayerOverlay
   googleType?: GoogleMutantType
   yandexType?: YandexTileType
+  maptilerStyle?: MapTilerStyleId
 }
 
 const YANDEX_TILE_BASE = 'https://tiles.api-maps.yandex.ru/v1/tiles/'
@@ -106,6 +113,49 @@ function buildLayerCatalog(): Record<MapLayerId, MapLayerConfig> {
       attribution: '&copy; OpenStreetMap, &copy; CARTO',
       maxZoom: 20,
     },
+  }
+
+  if (hasMaptiler) {
+    layers['maptiler-streets'] = {
+      id: 'maptiler-streets',
+      group: 'maptiler',
+      nameKey: 'mapLayers.maptilerStreets',
+      provider: 'maptiler',
+      maptilerStyle: 'streets',
+      attribution:
+        '&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> &copy; OpenStreetMap contributors',
+      maxZoom: 22,
+    }
+    layers['maptiler-hybrid'] = {
+      id: 'maptiler-hybrid',
+      group: 'maptiler',
+      nameKey: 'mapLayers.maptilerHybrid',
+      provider: 'maptiler',
+      maptilerStyle: 'hybrid',
+      attribution:
+        '&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> &copy; OpenStreetMap contributors',
+      maxZoom: 22,
+    }
+    layers['maptiler-outdoor'] = {
+      id: 'maptiler-outdoor',
+      group: 'maptiler',
+      nameKey: 'mapLayers.maptilerOutdoor',
+      provider: 'maptiler',
+      maptilerStyle: 'outdoor',
+      attribution:
+        '&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> &copy; OpenStreetMap contributors',
+      maxZoom: 22,
+    }
+    layers['maptiler-satellite'] = {
+      id: 'maptiler-satellite',
+      group: 'maptiler',
+      nameKey: 'mapLayers.maptilerSatellite',
+      provider: 'maptiler',
+      maptilerStyle: 'satellite',
+      attribution:
+        '&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> &copy; OpenStreetMap contributors',
+      maxZoom: 22,
+    }
   }
 
   if (hasGoogleMaps) {
@@ -181,14 +231,26 @@ function buildLayerCatalog(): Record<MapLayerId, MapLayerConfig> {
 export const MAP_LAYERS = buildLayerCatalog()
 
 export function getMapLayerGroups(): MapLayerGroup[] {
-  const groups: MapLayerGroup[] = ['osm']
+  const groups: MapLayerGroup[] = []
+  if (hasMaptiler) groups.push('maptiler')
+  groups.push('osm')
   if (hasGoogleMaps) groups.push('google')
   if (hasYandexMaps) groups.push('yandex')
   groups.push('satellite', 'other')
   return groups
 }
 
+/** OSM по умолчанию — MapTiler подгружается тяжёлым чанком по выбору в меню */
 export const DEFAULT_MAP_LAYER: MapLayerId = 'osm-standard'
+
+/** Слои MapTiler со встроенными подписями (не спутник без текста) */
+export function maptilerLayerHasBuiltinLabels(layerId: MapLayerId): boolean {
+  return (
+    layerId === 'maptiler-streets' ||
+    layerId === 'maptiler-hybrid' ||
+    layerId === 'maptiler-outdoor'
+  )
+}
 
 export function getLayersByGroup(group: MapLayerGroup): MapLayerConfig[] {
   return Object.values(MAP_LAYERS).filter((layer) => layer.group === group)

@@ -4,7 +4,13 @@ import { useTranslation } from 'react-i18next'
 import type { GeographicScope, Locale } from '@hayastani/shared'
 import { ClusterMap } from '../components/map/ClusterMap'
 import { MapLayerSwitcher } from '../components/map/MapLayerSwitcher'
+import { ArtsakhLabelsToggle } from '../components/map/ArtsakhLabelsToggle'
 import { MapMarkerModeSwitcher } from '../components/map/MapMarkerModeSwitcher'
+import {
+  loadStoredArtsakhLabels,
+  storeArtsakhLabels,
+  type ArtsakhLabelsMode,
+} from '../components/map/mapArtsakhLabels'
 import {
   DEFAULT_MAP_LAYER,
   isValidMapLayer,
@@ -38,6 +44,9 @@ export function MapPage() {
     const stored = loadStoredMapMarkerMode()
     return isValidMapMarkerMode(stored) ? stored : DEFAULT_MAP_MARKER_MODE
   })
+  const [artsakhLabels, setArtsakhLabels] = useState<ArtsakhLabelsMode>(
+    loadStoredArtsakhLabels,
+  )
 
   const handleLayerChange = (id: MapLayerId) => {
     if (!isValidMapLayer(id)) return
@@ -48,6 +57,11 @@ export function MapPage() {
   const handleMarkerModeChange = (mode: MapMarkerMode) => {
     setMarkerMode(mode)
     storeMapMarkerMode(mode)
+  }
+
+  const handleArtsakhLabelsChange = (mode: ArtsakhLabelsMode) => {
+    setArtsakhLabels(mode)
+    storeArtsakhLabels(mode)
   }
 
   const { data, isLoading } = useFortresses({
@@ -88,6 +102,10 @@ export function MapPage() {
         <div className="map-page__map-controls pointer-events-none absolute right-3 top-3 z-[1000] flex flex-col items-end gap-2">
           <MapLayerSwitcher value={mapLayerId} onChange={handleLayerChange} />
           <MapMarkerModeSwitcher value={markerMode} onChange={handleMarkerModeChange} />
+          <ArtsakhLabelsToggle
+            value={artsakhLabels}
+            onChange={handleArtsakhLabelsChange}
+          />
         </div>
 
           <ClusterMap
@@ -98,17 +116,18 @@ export function MapPage() {
             className="map-page__canvas"
             mapLayerId={mapLayerId}
             markerMode={markerMode}
+            artsakhLabels={artsakhLabels}
           />
         </div>
       </div>
 
-      <aside className="map-page__sidebar flex w-[min(100%,360px)] shrink-0 flex-col border-l border-stone-300 bg-[#f8f6f2]">
-        <div className="border-b border-stone-300 bg-[#3d4f63] px-4 py-3 text-white">
+      <aside className="map-page__sidebar flex w-[min(100%,360px)] shrink-0 flex-col border-l border-stone-300 bg-stone-50">
+        <div className="border-b border-stone-800 bg-stone-900 px-4 py-3 text-white">
           <h2 className="text-sm font-semibold uppercase tracking-wide">
             {t('nav.catalog')}
           </h2>
           <p className="mt-1 text-xs text-white/75">
-            {isLoading ? t('loading') : `${fortresses.length} ${t('nav.catalog').toLowerCase()}`}
+            {isLoading ? t('loading') : t('fortressesCount', { count: fortresses.length })}
           </p>
         </div>
 

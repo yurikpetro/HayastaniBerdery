@@ -7,6 +7,7 @@ export default defineConfig({
   optimizeDeps: {
     // UMD dist ломается при prebundle: (void 0).L → белый экран
     exclude: ['leaflet.gridlayer.googlemutant'],
+    include: ['@maptiler/leaflet-maptilersdk', '@maptiler/sdk'],
   },
   server: {
     port: 5173,

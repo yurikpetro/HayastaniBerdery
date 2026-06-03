@@ -24,13 +24,13 @@ export function SiteLayout() {
   return (
     <div
       className={
-        isMapHome ? 'flex h-dvh max-h-dvh flex-col overflow-hidden' : 'min-h-screen'
+        isMapHome ? 'flex h-dvh max-h-dvh flex-col overflow-hidden' : 'flex min-h-screen flex-col'
       }
     >
       <header
         className={`z-50 shrink-0 border-b ${
           isMapHome
-            ? 'border-[#2a3544] bg-[#3d4f63] text-white'
+            ? 'border-stone-900 bg-stone-900 text-white'
             : 'border-stone-200/80 bg-stone-50/90 text-stone-900 backdrop-blur-md'
         }`}
       >
@@ -111,7 +111,7 @@ export function SiteLayout() {
                 className={`rounded px-2 py-0.5 text-xs font-semibold uppercase ${
                   isMapHome
                     ? i18n.language === locale
-                      ? 'bg-white text-[#3d4f63]'
+                      ? 'bg-white text-stone-900'
                       : 'text-white/80 hover:bg-white/15'
                     : i18n.language === locale
                       ? 'bg-stone-900 text-white'
@@ -168,14 +168,14 @@ export function SiteLayout() {
         className={
           isMapHome
             ? 'min-h-0 flex-1'
-            : 'mx-auto max-w-7xl px-4 py-6 lg:px-6'
+            : 'mx-auto w-full max-w-7xl flex-1 px-4 py-6 lg:px-6'
         }
       >
         <Outlet />
       </main>
 
       {!isMapHome ? (
-        <footer className="mt-12 border-t border-stone-200 bg-stone-900 px-4 py-10 text-stone-200">
+        <footer className="shrink-0 border-t border-stone-200 bg-stone-900 px-4 py-10 text-stone-200">
           <div className="mx-auto flex max-w-7xl flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p>
               {t('brand')} — {t('tagline')}

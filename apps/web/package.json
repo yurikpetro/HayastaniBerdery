@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hayastani/shared": "*",
+    "@maptiler/leaflet-maptilersdk": "^4.1.1",
     "@tanstack/react-query": "^5.90.21",
     "i18next": "^25.8.18",
     "leaflet": "^1.9.4",

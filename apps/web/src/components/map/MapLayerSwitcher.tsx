@@ -15,6 +15,7 @@ interface MapLayerSwitcherProps {
 }
 
 const GROUP_LABEL_KEYS: Record<MapLayerGroup, string> = {
+  maptiler: 'mapLayers.groupMaptiler',
   osm: 'mapLayers.groupOsm',
   google: 'mapLayers.groupGoogle',
   yandex: 'mapLayers.groupYandex',

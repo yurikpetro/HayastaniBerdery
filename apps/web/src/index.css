@@ -116,6 +116,28 @@ h3 {
   margin-bottom: 0.5rem;
 }
 
+/* MapTiler SDK (MapLibre) внутри Leaflet */
+.leaflet-container .leaflet-gl-layer {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.leaflet-tile-pane .leaflet-tile {
+  opacity: 1;
+}
+
+.leaflet-gl-layer .maplibregl-map {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.leaflet-gl-layer .maplibregl-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
 /* Map layer switcher (PastVu-style) */
 .map-layer-switcher {
   position: relative;
@@ -127,17 +149,17 @@ h3 {
   align-items: center;
   gap: 8px;
   border: 1px solid rgba(255, 255, 255, 0.35);
-  background: linear-gradient(180deg, #4a6278 0%, #3d4f63 100%);
+  background: linear-gradient(180deg, #3d2e24 0%, #2a1f18 100%);
   color: #fff;
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 8px rgba(42, 31, 24, 0.35);
   white-space: nowrap;
 }
 
 .map-layer-switcher__toggle:hover {
-  background: linear-gradient(180deg, #556b82 0%, #46586d 100%);
+  background: linear-gradient(180deg, #4b392d 0%, #3d2e24 100%);
 }
 
 .map-layer-switcher__toggle-label {
@@ -150,24 +172,24 @@ h3 {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  min-width: 420px;
-  max-width: min(92vw, 520px);
-  background: linear-gradient(180deg, #4a6278 0%, #3a4d60 100%);
+  min-width: 480px;
+  max-width: min(92vw, 580px);
+  background: linear-gradient(180deg, #3d2e24 0%, #2a1f18 100%);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 4px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 24px rgba(42, 31, 24, 0.45);
   padding: 10px 12px 12px;
   z-index: 1100;
 }
 
 .map-layer-switcher__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
 .map-layer-switcher__column-title {
-  color: #b8d4f0;
+  color: #e8b79d;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -196,15 +218,16 @@ h3 {
   cursor: pointer;
   font-size: 12px;
   line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .map-layer-switcher__item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(163, 79, 47, 0.28);
 }
 
 .map-layer-switcher__item--active {
-  background: rgba(0, 0, 0, 0.35);
-  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(163, 79, 47, 0.42);
+  border-color: rgba(232, 183, 157, 0.65);
   font-weight: 600;
 }
 
@@ -225,8 +248,8 @@ h3 {
   border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  background: #3d4f63;
+  box-shadow: 0 2px 8px rgba(42, 31, 24, 0.35);
+  background: #2a1f18;
 }
 
 .map-marker-mode__btn {
@@ -246,11 +269,11 @@ h3 {
 }
 
 .map-marker-mode__btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(163, 79, 47, 0.28);
 }
 
 .map-marker-mode__btn--active {
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(163, 79, 47, 0.5);
   color: #fff;
   font-weight: 600;
 }
@@ -298,7 +321,7 @@ h3 {
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  background: linear-gradient(145deg, #5a6f82, #3d4f63);
+  background: linear-gradient(145deg, #a34f2f, #2a1f18);
 }
 
 .fortress-photo-cluster {
@@ -309,7 +332,7 @@ h3 {
   overflow: hidden;
   border: 2px solid #fff;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
-  background: #3d4f63;
+  background: #2a1f18;
 }
 
 .fortress-photo-cluster img {
@@ -360,4 +383,65 @@ h3 {
   .map-marker-mode__btn {
     padding: 6px 8px;
   }
+}
+
+/* Artsakh Armenian toponym overlay */
+.artsakh-labels-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 220px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 4px;
+  background: linear-gradient(180deg, #3d2e24 0%, #2a1f18 100%);
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1.3;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(42, 31, 24, 0.35);
+}
+
+.artsakh-labels-toggle input {
+  accent-color: var(--color-terracotta);
+  cursor: pointer;
+}
+
+.artsakh-labels-toggle__text {
+  user-select: none;
+}
+
+.artsakh-label-wrap {
+  background: transparent !important;
+  border: none !important;
+}
+
+.artsakh-label {
+  display: inline-block;
+  font-weight: 700;
+  color: #2a1f18;
+  white-space: nowrap;
+  text-shadow:
+    0 0 4px #fff,
+    0 0 6px #fff,
+    0 0 8px #fff,
+    1px 1px 0 #fff,
+    -1px -1px 0 #fff,
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff;
+  pointer-events: none;
+}
+
+.artsakh-label--city {
+  font-size: 13px;
+}
+
+.artsakh-label--town {
+  font-size: 11px;
+}
+
+.artsakh-label--village {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.95;
 }

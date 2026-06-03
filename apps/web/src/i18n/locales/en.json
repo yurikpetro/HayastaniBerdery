@@ -3,7 +3,7 @@
   "tagline": "A public registry of Armenian fortresses with a map, sources, and community contributions",
   "nav": {
     "map": "Map",
-    "catalog": "Catalog",
+    "catalog": "Fortresses",
     "submit": "Submit",
     "about": "About",
     "rules": "Rules",
@@ -22,9 +22,46 @@
   "features": "Features",
   "warnings": "Warnings",
   "history": "History",
+  "fortressesCount_one": "{{count}} fortress",
+  "fortressesCount_other": "{{count}} fortresses",
+  "about": {
+    "eyebrow": "About the project",
+    "title": "A living map of Armenian fortresses",
+    "intro": "Hayastani Berdry brings fortresses, defensive sites, and historical places into one shared registry: from well-known monuments to locations mostly remembered by local communities.",
+    "sideNote": "We preserve coordinates, historical context, photos, routes, and sources so Armenian heritage can be explored with more care and clarity.",
+    "mapCta": "Open the map",
+    "submitCta": "Submit a fortress",
+    "cardMapTitle": "Map and routes",
+    "cardMapText": "Each point is tied to its landscape, making location, nearby settlements, and access conditions easier to understand.",
+    "cardSourcesTitle": "Sources",
+    "cardSourcesText": "Entries are backed by links, descriptions, and confidence notes instead of being just a gallery of attractive photos.",
+    "cardCommunityTitle": "Community input",
+    "cardCommunityText": "Users can suggest new places and corrections, while admins review the data before it becomes public."
+  },
+  "rules": {
+    "eyebrow": "Moderation rules",
+    "title": "How we review and publish materials",
+    "intro": "The project brings together historical data, local testimony, and field observations. To keep the map useful, every contribution is reviewed and clearly labeled.",
+    "evidenceTitle": "Evidence level",
+    "evidenceText": "Every fortress has a status: verified, partially verified, oral testimony, or needs research.",
+    "sourcesTitle": "Historical sources",
+    "sourcesText": "Historical claims should be linked, when possible, to publications, archives, maps, photos, or other verifiable materials.",
+    "testimonyTitle": "Oral testimony",
+    "testimonyText": "Stories from local residents are valuable and allowed, but they must be labeled explicitly as oral testimony.",
+    "coordinatesTitle": "Coordinates",
+    "coordinatesText": "Coordinates must include an accuracy label: exact, approximate, or unverified.",
+    "reviewTitle": "Submission review",
+    "reviewText": "User submissions are not published immediately. An admin reviews the data and clarifies details when needed.",
+    "photosTitle": "Photos and rights",
+    "photosText": "Photos must include author, rights holder, or source metadata so materials can be used responsibly.",
+    "safetyTitle": "Important access note",
+    "safetyText": "The site does not guarantee safe access to remote, difficult, or border-area locations. Check the current situation and follow local restrictions before traveling."
+  },
   "submitForm": {
     "title": "Submit a fortress",
     "intro": "Fill in the details. An admin will review before publication.",
+    "signInTitle": "Log in to submit a fortress",
+    "signInIntro": "This links the submission to your profile so we can clarify details before publication.",
     "note": "How do you know about this place?",
     "send": "Send for moderation"
   },
@@ -47,6 +84,11 @@
   "empty": "Nothing found",
   "loading": "Loading...",
   "mapLayers": {
+    "groupMaptiler": "MapTiler",
+    "maptilerStreets": "Streets (localized)",
+    "maptilerHybrid": "Hybrid (localized)",
+    "maptilerOutdoor": "Outdoor (localized)",
+    "maptilerSatellite": "Satellite",
     "groupOsm": "OSM",
     "groupGoogle": "Google",
     "groupYandex": "Yandex",
@@ -68,5 +110,9 @@
     "title": "Map display",
     "pins": "Pins",
     "photos": "Previews"
+  },
+  "mapToponyms": {
+    "artsakhLabels": "Armenian labels (Artsakh)",
+    "hint": "Labels drawn on top of the map. Provider labels on tiles are not replaced."
   }
 }

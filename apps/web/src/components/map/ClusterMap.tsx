@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { MapContainer, useMap } from 'react-leaflet'
+import { ArtsakhHyLabelsLayer } from './ArtsakhHyLabelsLayer'
 import { MapBaseLayers } from './MapBaseLayers'
+import type { ArtsakhLabelsMode } from './mapArtsakhLabels'
 import type { MapLayerId } from './mapLayers'
 import type { MapMarkerMode } from './mapMarkerMode'
 import L from 'leaflet'
@@ -113,6 +115,7 @@ interface ClusterMapProps {
   className?: string
   mapLayerId: MapLayerId
   markerMode: MapMarkerMode
+  artsakhLabels: ArtsakhLabelsMode
 }
 
 export function ClusterMap({
@@ -123,6 +126,7 @@ export function ClusterMap({
   className = 'fortress-map',
   mapLayerId,
   markerMode,
+  artsakhLabels,
 }: ClusterMapProps) {
   return (
     <MapContainer
@@ -133,7 +137,8 @@ export function ClusterMap({
       style={{ height: '100%', width: '100%' }}
     >
       <MapResizeFix />
-      <MapBaseLayers layerId={mapLayerId} />
+      <MapBaseLayers layerId={mapLayerId} locale={locale} />
+      <ArtsakhHyLabelsLayer enabled={artsakhLabels === 'on'} locale={locale} />
       <ClusterLayer
         fortresses={fortresses}
         locale={locale}
