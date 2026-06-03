@@ -28,6 +28,19 @@ npm run dev:all
 
 - Web: http://localhost:5173
 - API: http://localhost:3000/api
+
+### Карта: Google и Яндекс (опционально)
+
+Скопируйте `apps/web/.env.example` в `apps/web/.env` и укажите ключи:
+
+```env
+VITE_GOOGLE_MAPS_API_KEY=ваш_ключ_google
+VITE_YANDEX_MAPS_API_KEY=ваш_ключ_yandex
+```
+
+Колонки **Google** и **Яндекс** в переключателе слоёв появляются только если соответствующий ключ задан. После изменения `.env` перезапустите `npm run dev`.
+
+Без ключей доступны OSM, Esri и Carto.
 - MinIO console: http://localhost:9001 (minioadmin / minioadmin)
 
 ### Default accounts (seed)

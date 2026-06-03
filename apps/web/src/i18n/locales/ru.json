@@ -48,10 +48,18 @@
   "loading": "Загрузка...",
   "mapLayers": {
     "groupOsm": "OSM",
+    "groupGoogle": "Google",
+    "groupYandex": "Яндекс",
     "groupSatellite": "Спутник",
     "groupOther": "Прочие",
     "osmStandard": "OpenStreetMap",
     "osmTopo": "Топографическая",
+    "googleRoadmap": "Схема",
+    "googleSatellite": "Спутник",
+    "googleHybrid": "Гибрид",
+    "yandexMap": "Схема",
+    "yandexSatellite": "Спутник",
+    "yandexHybrid": "Гибрид",
     "esriImagery": "Спутник (Esri)",
     "esriHybrid": "Гибрид (Esri)",
     "cartoVoyager": "Carto Voyager"

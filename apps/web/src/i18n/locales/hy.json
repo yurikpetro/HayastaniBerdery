@@ -48,10 +48,18 @@
   "loading": "Բեռնվում է...",
   "mapLayers": {
     "groupOsm": "OSM",
+    "groupGoogle": "Google",
+    "groupYandex": "Յանդեքս",
     "groupSatellite": "Արբանյակ",
     "groupOther": "Այլ",
     "osmStandard": "OpenStreetMap",
     "osmTopo": "Տոպոգրաֆիական",
+    "googleRoadmap": "Քարտեզ",
+    "googleSatellite": "Արբանյակ",
+    "googleHybrid": "Հիբրիդ",
+    "yandexMap": "Քարտեզ",
+    "yandexSatellite": "Արբանյակ",
+    "yandexHybrid": "Հիբրիդ",
     "esriImagery": "Արբանյակ (Esri)",
     "esriHybrid": "Հիբրիդ (Esri)",
     "cartoVoyager": "Carto Voyager"

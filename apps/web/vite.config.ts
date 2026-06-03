@@ -4,6 +4,10 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  optimizeDeps: {
+    // UMD dist ломается при prebundle: (void 0).L → белый экран
+    exclude: ['leaflet.gridlayer.googlemutant'],
+  },
   server: {
     port: 5173,
     proxy: {

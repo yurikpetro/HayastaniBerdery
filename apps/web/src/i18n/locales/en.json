@@ -48,10 +48,18 @@
   "loading": "Loading...",
   "mapLayers": {
     "groupOsm": "OSM",
+    "groupGoogle": "Google",
+    "groupYandex": "Yandex",
     "groupSatellite": "Satellite",
     "groupOther": "Other",
     "osmStandard": "OpenStreetMap",
     "osmTopo": "Topographic",
+    "googleRoadmap": "Map",
+    "googleSatellite": "Satellite",
+    "googleHybrid": "Hybrid",
+    "yandexMap": "Map",
+    "yandexSatellite": "Satellite",
+    "yandexHybrid": "Hybrid",
     "esriImagery": "Satellite (Esri)",
     "esriHybrid": "Hybrid (Esri)",
     "cartoVoyager": "Carto Voyager"

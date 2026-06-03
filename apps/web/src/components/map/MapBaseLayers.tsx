@@ -1,6 +1,10 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { TileLayer, useMap } from 'react-leaflet'
-import { MAP_LAYERS, type MapLayerId } from './mapLayers'
+import { DEFAULT_MAP_LAYER, MAP_LAYERS, type MapLayerId } from './mapLayers'
+
+const GoogleMutantLayer = lazy(() =>
+  import('./GoogleMutantLayer').then((m) => ({ default: m.GoogleMutantLayer })),
+)
 
 function InvalidateOnLayerChange({ layerId }: { layerId: MapLayerId }) {
   const map = useMap()
@@ -12,26 +16,44 @@ function InvalidateOnLayerChange({ layerId }: { layerId: MapLayerId }) {
 }
 
 export function MapBaseLayers({ layerId }: { layerId: MapLayerId }) {
-  const layer = MAP_LAYERS[layerId] ?? MAP_LAYERS['osm-standard']
+  const layer = MAP_LAYERS[layerId] ?? MAP_LAYERS[DEFAULT_MAP_LAYER]
 
-  return (
-    <>
-      <InvalidateOnLayerChange layerId={layerId} />
-      <TileLayer
-        key={layer.id}
-        url={layer.url}
-        attribution={layer.attribution}
-        maxZoom={layer.maxZoom}
-      />
-      {layer.overlay ? (
+  if (layer.provider === 'google' && layer.googleType) {
+    return (
+      <>
+        <InvalidateOnLayerChange layerId={layerId} />
+        <Suspense fallback={null}>
+          <GoogleMutantLayer type={layer.googleType} />
+        </Suspense>
+      </>
+    )
+  }
+
+  if (layer.provider === 'yandex' || layer.provider === 'tile') {
+    if (!layer.url) return null
+
+    return (
+      <>
+        <InvalidateOnLayerChange layerId={layerId} />
         <TileLayer
-          key={`${layer.id}-overlay`}
-          url={layer.overlay.url}
-          attribution={layer.overlay.attribution ?? ''}
+          key={layer.id}
+          url={layer.url}
+          attribution={layer.attribution}
           maxZoom={layer.maxZoom}
-          pane="overlayPane"
         />
-      ) : null}
-    </>
-  )
+        {layer.overlay ? (
+          <TileLayer
+            key={`${layer.id}-overlay`}
+            url={layer.overlay.url}
+            attribution={layer.overlay.attribution ?? layer.attribution}
+            maxZoom={layer.maxZoom}
+            opacity={layer.overlay.opacity ?? 1}
+            pane="overlayPane"
+          />
+        ) : null}
+      </>
+    )
+  }
+
+  return null
 }

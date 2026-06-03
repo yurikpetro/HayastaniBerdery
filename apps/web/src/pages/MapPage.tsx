@@ -4,7 +4,13 @@ import { useTranslation } from 'react-i18next'
 import type { GeographicScope, Locale } from '@hayastani/shared'
 import { ClusterMap } from '../components/map/ClusterMap'
 import { MapLayerSwitcher } from '../components/map/MapLayerSwitcher'
-import { loadStoredMapLayer, storeMapLayer, type MapLayerId } from '../components/map/mapLayers'
+import {
+  DEFAULT_MAP_LAYER,
+  isValidMapLayer,
+  loadStoredMapLayer,
+  storeMapLayer,
+  type MapLayerId,
+} from '../components/map/mapLayers'
 import { FortressListItem } from '../components/fortress/FortressListItem'
 import { useFortresses } from '../hooks/useFortresses'
 import { localized, scopeLabels } from '../lib/labels'
@@ -16,9 +22,13 @@ export function MapPage() {
   const [search, setSearch] = useState('')
   const [scope, setScope] = useState<GeographicScope | 'all'>('all')
   const selectedSlug = params.get('fortress') ?? undefined
-  const [mapLayerId, setMapLayerId] = useState<MapLayerId>(loadStoredMapLayer)
+  const [mapLayerId, setMapLayerId] = useState<MapLayerId>(() => {
+    const stored = loadStoredMapLayer()
+    return isValidMapLayer(stored) ? stored : DEFAULT_MAP_LAYER
+  })
 
   const handleLayerChange = (id: MapLayerId) => {
+    if (!isValidMapLayer(id)) return
     setMapLayerId(id)
     storeMapLayer(id)
   }
