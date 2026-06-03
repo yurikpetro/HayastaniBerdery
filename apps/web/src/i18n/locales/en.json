@@ -24,6 +24,15 @@
   "history": "History",
   "fortressesCount_one": "{{count}} fortress",
   "fortressesCount_other": "{{count}} fortresses",
+  "catalogFilters": {
+    "yearFrom": "Year from",
+    "yearTo": "Year to",
+    "allTypes": "All types",
+    "allPeriods": "All periods",
+    "allConditions": "All conditions",
+    "reset": "Reset",
+    "found": "Found: {{count}}"
+  },
   "about": {
     "eyebrow": "About the project",
     "title": "A living map of Armenian fortresses",

@@ -26,6 +26,15 @@
   "fortressesCount_few": "{{count}} крепости",
   "fortressesCount_many": "{{count}} крепостей",
   "fortressesCount_other": "{{count}} крепости",
+  "catalogFilters": {
+    "yearFrom": "Год от",
+    "yearTo": "Год до",
+    "allTypes": "Все типы",
+    "allPeriods": "Все периоды",
+    "allConditions": "Все состояния",
+    "reset": "Сбросить",
+    "found": "Найдено: {{count}}"
+  },
   "about": {
     "eyebrow": "О проекте",
     "title": "Живая карта крепостей Армении",

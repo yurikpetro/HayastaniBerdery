@@ -24,6 +24,15 @@
   "history": "Պատմություն",
   "fortressesCount_one": "{{count}} բերդ",
   "fortressesCount_other": "{{count}} բերդ",
+  "catalogFilters": {
+    "yearFrom": "Տարեթիվ՝ սկսած",
+    "yearTo": "Տարեթիվ՝ մինչև",
+    "allTypes": "Բոլոր տեսակները",
+    "allPeriods": "Բոլոր ժամանակաշրջանները",
+    "allConditions": "Բոլոր վիճակները",
+    "reset": "Մաքրել",
+    "found": "Գտնվել է՝ {{count}}"
+  },
   "about": {
     "eyebrow": "Նախագծի մասին",
     "title": "Հայաստանի բերդերի կենդանի քարտեզ",

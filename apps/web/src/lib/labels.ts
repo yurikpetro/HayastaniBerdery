@@ -3,6 +3,7 @@ import type {
   CoordinateAccuracy,
   EvidenceLevel,
   FortressCondition,
+  FortressType,
   GeographicScope,
   HistoricalPeriod,
   Locale,
@@ -52,6 +53,27 @@ export const periodLabels: Record<HistoricalPeriod, LocalizedText> = {
   medieval: { hy: 'Միջնադար', ru: 'Средневековье', en: 'Medieval' },
   'late-medieval': { hy: 'Ուշ միջնադար', ru: 'Позднее Средневековье', en: 'Late medieval' },
   unknown: { hy: 'Անհայտ', ru: 'Неизвестно', en: 'Unknown' },
+}
+
+export const typeLabels: Record<FortressType, LocalizedText> = {
+  fortress: { hy: 'Բերդ', ru: 'Крепость', en: 'Fortress' },
+  'fortified-settlement': {
+    hy: 'Ամրացված բնակավայր',
+    ru: 'Укреплённое поселение',
+    en: 'Fortified settlement',
+  },
+  citadel: { hy: 'Միջնաբերդ', ru: 'Цитадель', en: 'Citadel' },
+  tower: { hy: 'Աշտարակ', ru: 'Башня', en: 'Tower' },
+  'fortified-monastery': {
+    hy: 'Ամրացված վանք',
+    ru: 'Укреплённый монастырь',
+    en: 'Fortified monastery',
+  },
+  'defensive-wall': {
+    hy: 'Պաշտպանական պարիսպ',
+    ru: 'Оборонительная стена',
+    en: 'Defensive wall',
+  },
 }
 
 export const accessibilityLabels: Record<AccessibilityLevel, LocalizedText> = {
