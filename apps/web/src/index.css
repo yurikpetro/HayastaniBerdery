@@ -115,3 +115,106 @@ h3 {
   border-radius: 0.5rem;
   margin-bottom: 0.5rem;
 }
+
+/* Map layer switcher (PastVu-style) */
+.map-layer-switcher {
+  position: relative;
+  font-size: 13px;
+}
+
+.map-layer-switcher__toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: linear-gradient(180deg, #4a6278 0%, #3d4f63 100%);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+}
+
+.map-layer-switcher__toggle:hover {
+  background: linear-gradient(180deg, #556b82 0%, #46586d 100%);
+}
+
+.map-layer-switcher__toggle-label {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.map-layer-switcher__panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 420px;
+  max-width: min(92vw, 520px);
+  background: linear-gradient(180deg, #4a6278 0%, #3a4d60 100%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  padding: 10px 12px 12px;
+  z-index: 1100;
+}
+
+.map-layer-switcher__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.map-layer-switcher__column-title {
+  color: #b8d4f0;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.map-layer-switcher__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.map-layer-switcher__item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #fff;
+  padding: 5px 8px;
+  margin-bottom: 2px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.map-layer-switcher__item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.map-layer-switcher__item--active {
+  background: rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.45);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .map-layer-switcher__panel {
+    min-width: 280px;
+    right: 0;
+  }
+
+  .map-layer-switcher__grid {
+    grid-template-columns: 1fr;
+  }
+}

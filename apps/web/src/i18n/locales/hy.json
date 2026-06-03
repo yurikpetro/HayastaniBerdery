@@ -45,5 +45,15 @@
     "needsChanges": "Պետք է լրացնել"
   },
   "empty": "Ոչինչ չի գտնվել",
-  "loading": "Բեռնվում է..."
+  "loading": "Բեռնվում է...",
+  "mapLayers": {
+    "groupOsm": "OSM",
+    "groupSatellite": "Արբանյակ",
+    "groupOther": "Այլ",
+    "osmStandard": "OpenStreetMap",
+    "osmTopo": "Տոպոգրաֆիական",
+    "esriImagery": "Արբանյակ (Esri)",
+    "esriHybrid": "Հիբրիդ (Esri)",
+    "cartoVoyager": "Carto Voyager"
+  }
 }

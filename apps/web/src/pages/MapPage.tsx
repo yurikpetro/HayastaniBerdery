@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { GeographicScope, Locale } from '@hayastani/shared'
 import { ClusterMap } from '../components/map/ClusterMap'
+import { MapLayerSwitcher } from '../components/map/MapLayerSwitcher'
+import { loadStoredMapLayer, storeMapLayer, type MapLayerId } from '../components/map/mapLayers'
 import { FortressListItem } from '../components/fortress/FortressListItem'
 import { useFortresses } from '../hooks/useFortresses'
 import { localized, scopeLabels } from '../lib/labels'
@@ -14,6 +16,12 @@ export function MapPage() {
   const [search, setSearch] = useState('')
   const [scope, setScope] = useState<GeographicScope | 'all'>('all')
   const selectedSlug = params.get('fortress') ?? undefined
+  const [mapLayerId, setMapLayerId] = useState<MapLayerId>(loadStoredMapLayer)
+
+  const handleLayerChange = (id: MapLayerId) => {
+    setMapLayerId(id)
+    storeMapLayer(id)
+  }
 
   const { data, isLoading } = useFortresses({
     scope: scope === 'all' ? undefined : scope,
@@ -50,12 +58,17 @@ export function MapPage() {
           </div>
         </div>
 
+        <div className="map-page__layer-switch pointer-events-none absolute right-3 top-3 z-[1000]">
+          <MapLayerSwitcher value={mapLayerId} onChange={handleLayerChange} />
+        </div>
+
           <ClusterMap
             fortresses={fortresses}
             locale={locale}
             selectedSlug={selectedSlug}
             onSelect={(slug) => setParams({ fortress: slug })}
             className="map-page__canvas"
+            mapLayerId={mapLayerId}
           />
         </div>
       </div>

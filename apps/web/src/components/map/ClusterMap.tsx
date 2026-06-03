@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
-import { MapContainer, TileLayer, useMap } from 'react-leaflet'
+import { MapContainer, useMap } from 'react-leaflet'
+import { MapBaseLayers } from './MapBaseLayers'
+import type { MapLayerId } from './mapLayers'
 import L from 'leaflet'
 import 'leaflet.markercluster'
 import type { Fortress } from '@hayastani/shared'
@@ -99,6 +101,7 @@ interface ClusterMapProps {
   selectedSlug?: string
   onSelect: (slug: string) => void
   className?: string
+  mapLayerId: MapLayerId
 }
 
 export function ClusterMap({
@@ -107,6 +110,7 @@ export function ClusterMap({
   selectedSlug,
   onSelect,
   className = 'fortress-map',
+  mapLayerId,
 }: ClusterMapProps) {
   return (
     <MapContainer
@@ -117,10 +121,7 @@ export function ClusterMap({
       style={{ height: '100%', width: '100%' }}
     >
       <MapResizeFix />
-      <TileLayer
-        attribution='&copy; OpenStreetMap'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+      <MapBaseLayers layerId={mapLayerId} />
       <ClusterLayer
         fortresses={fortresses}
         locale={locale}

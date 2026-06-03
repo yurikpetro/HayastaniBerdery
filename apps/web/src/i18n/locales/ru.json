@@ -45,5 +45,15 @@
     "needsChanges": "Нужна доработка"
   },
   "empty": "Ничего не найдено",
-  "loading": "Загрузка..."
+  "loading": "Загрузка...",
+  "mapLayers": {
+    "groupOsm": "OSM",
+    "groupSatellite": "Спутник",
+    "groupOther": "Прочие",
+    "osmStandard": "OpenStreetMap",
+    "osmTopo": "Топографическая",
+    "esriImagery": "Спутник (Esri)",
+    "esriHybrid": "Гибрид (Esri)",
+    "cartoVoyager": "Carto Voyager"
+  }
 }

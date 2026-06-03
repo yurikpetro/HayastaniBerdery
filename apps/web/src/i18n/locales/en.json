@@ -45,5 +45,15 @@
     "needsChanges": "Request changes"
   },
   "empty": "Nothing found",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "mapLayers": {
+    "groupOsm": "OSM",
+    "groupSatellite": "Satellite",
+    "groupOther": "Other",
+    "osmStandard": "OpenStreetMap",
+    "osmTopo": "Topographic",
+    "esriImagery": "Satellite (Esri)",
+    "esriHybrid": "Hybrid (Esri)",
+    "cartoVoyager": "Carto Voyager"
+  }
 }
