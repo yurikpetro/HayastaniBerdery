@@ -116,5 +116,12 @@
   "mapToponyms": {
     "artsakhLabels": "Армянские названия (Арцах)",
     "hint": "Доп. армянские названия в Арцахе поверх карты. MapTiler (hy/ru): подписи из OSM name:hy."
+  },
+  "mapTimeline": {
+    "title": "Период",
+    "from": "Начало периода",
+    "to": "Конец периода",
+    "bce": "до н.э.",
+    "visible": "Показано {{visible}} из {{total}}"
   }
 }

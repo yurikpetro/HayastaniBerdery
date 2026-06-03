@@ -23,7 +23,6 @@ export function MapTilerRasterLayer({ styleId }: MapTilerRasterLayerProps) {
       tileSize={512}
       zoomOffset={-1}
       maxZoom={22}
-      attribution='&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> &copy; OpenStreetMap contributors'
     />
   )
 }

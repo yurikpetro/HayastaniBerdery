@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { MapContainer, useMap } from 'react-leaflet'
+import { AttributionControl, MapContainer, useMap } from 'react-leaflet'
 import { ArtsakhHyLabelsLayer } from './ArtsakhHyLabelsLayer'
 import { MapBaseLayers } from './MapBaseLayers'
 import type { ArtsakhLabelsMode } from './mapArtsakhLabels'
@@ -133,9 +133,11 @@ export function ClusterMap({
       center={[40.2, 44.5]}
       zoom={8}
       scrollWheelZoom
+      attributionControl={false}
       className={className}
       style={{ height: '100%', width: '100%' }}
     >
+      <AttributionControl position="bottomright" prefix={false} />
       <MapResizeFix />
       <MapBaseLayers layerId={mapLayerId} locale={locale} />
       <ArtsakhHyLabelsLayer enabled={artsakhLabels === 'on'} locale={locale} />

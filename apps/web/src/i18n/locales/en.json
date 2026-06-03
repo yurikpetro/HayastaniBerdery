@@ -114,5 +114,12 @@
   "mapToponyms": {
     "artsakhLabels": "Armenian labels (Artsakh)",
     "hint": "Labels drawn on top of the map. Provider labels on tiles are not replaced."
+  },
+  "mapTimeline": {
+    "title": "Period",
+    "from": "Period start",
+    "to": "Period end",
+    "bce": "BCE",
+    "visible": "Showing {{visible}} of {{total}}"
   }
 }

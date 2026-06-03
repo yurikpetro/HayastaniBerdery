@@ -17,9 +17,9 @@ export const scopeLabels: Record<GeographicScope, LocalizedText> = {
   },
   artsakh: { hy: 'Արցախ', ru: 'Арцах', en: 'Artsakh' },
   'historical-armenia': {
-    hy: 'Պատմական Հայաստան',
-    ru: 'Историческая Армения',
-    en: 'Historical Armenia',
+    hy: 'Արևմտյան Հայաստան',
+    ru: 'Западная Армения',
+    en: 'Western Armenia',
   },
 }
 
