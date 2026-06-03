@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { GeographicScope, Locale } from '@hayastani/shared'
 import { ClusterMap } from '../components/map/ClusterMap'
-import { FortressPreview } from '../components/fortress/FortressPreview'
+import { FortressListItem } from '../components/fortress/FortressListItem'
 import { useFortresses } from '../hooks/useFortresses'
 import { localized, scopeLabels } from '../lib/labels'
 
@@ -18,35 +18,27 @@ export function MapPage() {
   const { data, isLoading } = useFortresses({
     scope: scope === 'all' ? undefined : scope,
     search: search || undefined,
+    limit: 100,
   })
 
   const fortresses = useMemo(() => data?.items ?? [], [data])
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-3xl border border-stone-200 bg-white/80 p-6 shadow-sm">
-        <p className="text-sm uppercase tracking-widest text-terracotta">Explore</p>
-        <h2 className="mt-2 max-w-3xl text-3xl font-bold text-stone-900 md:text-4xl">
-          {t('tagline')}
-        </h2>
-      </section>
-
-      <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-        <aside className="space-y-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-          <label className="block text-sm font-medium">
-            {t('search')}
+    <div className="map-page flex h-full min-h-0 w-full">
+      <div className="relative min-h-0 min-w-0 flex-1 self-stretch">
+        <div className="map-page__map-wrap">
+        <div className="map-page__toolbar pointer-events-none absolute left-3 top-3 z-[1000] flex max-w-md flex-col gap-2">
+          <div className="pointer-events-auto flex flex-wrap gap-2 rounded-lg border border-stone-200/90 bg-white/95 p-2 shadow-lg backdrop-blur-sm">
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-stone-300 px-3 py-2"
+              placeholder={t('search')}
+              className="min-w-[180px] flex-1 rounded-md border border-stone-300 px-3 py-1.5 text-sm"
             />
-          </label>
-          <label className="block text-sm font-medium">
-            {t('filters')}
             <select
               value={scope}
               onChange={(e) => setScope(e.target.value as GeographicScope | 'all')}
-              className="mt-1 w-full rounded-xl border border-stone-300 px-3 py-2"
+              className="rounded-md border border-stone-300 px-3 py-1.5 text-sm"
             >
               <option value="all">{t('allScopes')}</option>
               {(Object.keys(scopeLabels) as GeographicScope[]).map((key) => (
@@ -55,60 +47,47 @@ export function MapPage() {
                 </option>
               ))}
             </select>
-          </label>
-
-          <div className="max-h-[420px] space-y-2 overflow-auto">
-            {isLoading ? (
-              <p className="text-sm text-stone-500">{t('loading')}</p>
-            ) : fortresses.length ? (
-              fortresses.map((fortress) => (
-                <button
-                  key={fortress.id}
-                  type="button"
-                  onClick={() => setParams({ fortress: fortress.slug })}
-                  className={`w-full rounded-xl border px-3 py-2 text-left text-sm transition ${
-                    selectedSlug === fortress.slug
-                      ? 'border-terracotta bg-terracotta/10'
-                      : 'border-stone-200 hover:bg-stone-50'
-                  }`}
-                >
-                  <strong className="block">{localized(fortress.name, locale)}</strong>
-                  <span className="text-stone-500">{localized(fortress.marz, locale)}</span>
-                </button>
-              ))
-            ) : (
-              <p className="text-sm text-stone-500">{t('empty')}</p>
-            )}
           </div>
-        </aside>
+        </div>
 
-        <section className="overflow-hidden rounded-2xl border border-stone-200 bg-white p-2 shadow-sm">
           <ClusterMap
             fortresses={fortresses}
             locale={locale}
             selectedSlug={selectedSlug}
             onSelect={(slug) => setParams({ fortress: slug })}
+            className="map-page__canvas"
           />
-        </section>
+        </div>
       </div>
 
-      {selectedSlug ? (
-        <section className="grid gap-4 md:grid-cols-2">
-          {fortresses
-            .filter((f) => f.slug === selectedSlug)
-            .map((fortress) => (
-              <div key={fortress.id} className="space-y-3">
-                <FortressPreview fortress={fortress} locale={locale} />
-                <Link
-                  to={`/fortress/${fortress.slug}`}
-                  className="inline-flex rounded-full bg-terracotta px-5 py-2 text-white"
-                >
-                  {t('details')}
-                </Link>
-              </div>
-            ))}
-        </section>
-      ) : null}
+      <aside className="map-page__sidebar flex w-[min(100%,360px)] shrink-0 flex-col border-l border-stone-300 bg-[#f8f6f2]">
+        <div className="border-b border-stone-300 bg-[#3d4f63] px-4 py-3 text-white">
+          <h2 className="text-sm font-semibold uppercase tracking-wide">
+            {t('nav.catalog')}
+          </h2>
+          <p className="mt-1 text-xs text-white/75">
+            {isLoading ? t('loading') : `${fortresses.length} ${t('nav.catalog').toLowerCase()}`}
+          </p>
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          {isLoading ? (
+            <p className="p-4 text-sm text-stone-500">{t('loading')}</p>
+          ) : fortresses.length ? (
+            fortresses.map((fortress) => (
+              <FortressListItem
+                key={fortress.id}
+                fortress={fortress}
+                locale={locale}
+                active={selectedSlug === fortress.slug}
+                onSelect={() => setParams({ fortress: fortress.slug })}
+              />
+            ))
+          ) : (
+            <p className="p-4 text-sm text-stone-500">{t('empty')}</p>
+          )}
+        </div>
+      </aside>
     </div>
   )
 }

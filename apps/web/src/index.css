@@ -19,19 +19,36 @@
 html,
 body,
 #root {
+  height: 100%;
   min-height: 100%;
 }
 
 body {
   margin: 0;
   font-family: var(--font-body);
+  background-color: #faf7f2;
+  color: var(--color-stone-900);
+}
+
+/* Decorative background only on inner pages, not on full-screen map */
+body:not(.map-home) {
   background-color: #2a1f18;
   background-image: url('/background.png');
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  color: var(--color-stone-900);
+}
+
+html.map-home,
+html.map-home body,
+html.map-home #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body.map-home {
+  background: #e8e4dc;
 }
 
 h1,
@@ -45,6 +62,46 @@ h3 {
   min-height: 520px;
   border-radius: 1rem;
   z-index: 0;
+}
+
+.map-page {
+  height: 100%;
+  min-height: 0;
+}
+
+.map-page__map-wrap {
+  position: absolute;
+  inset: 0;
+}
+
+.map-page__canvas,
+.map-page__canvas.leaflet-container {
+  height: 100% !important;
+  width: 100% !important;
+  min-height: 0;
+  border-radius: 0;
+  z-index: 0;
+}
+
+.map-page__sidebar {
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 900px) {
+  .map-page {
+    flex-direction: column;
+  }
+
+  .map-page__sidebar {
+    width: 100%;
+    max-height: 42vh;
+    border-left: none;
+    border-top: 1px solid #c9bfb0;
+  }
+
+  .map-page__canvas {
+    min-height: 50vh;
+  }
 }
 
 .leaflet-popup-content-wrapper {

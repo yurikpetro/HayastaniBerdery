@@ -1,9 +1,8 @@
 import { useEffect } from 'react'
-import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet.markercluster'
 import type { Fortress } from '@hayastani/shared'
-import { Link } from 'react-router-dom'
 import { localized, primaryPhoto } from '../../lib/labels'
 
 const icon = new L.Icon({
@@ -15,6 +14,39 @@ const icon = new L.Icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
 })
+
+function MapResizeFix() {
+  const map = useMap()
+
+  useEffect(() => {
+    const fix = () => {
+      map.invalidateSize({ animate: false })
+    }
+    fix()
+    const t1 = window.setTimeout(fix, 0)
+    const t2 = window.setTimeout(fix, 200)
+    const t3 = window.setTimeout(fix, 600)
+    window.addEventListener('resize', fix)
+
+    const container = map.getContainer().parentElement
+    const observer =
+      container &&
+      new ResizeObserver(() => {
+        fix()
+      })
+    if (observer && container) observer.observe(container)
+
+    return () => {
+      window.clearTimeout(t1)
+      window.clearTimeout(t2)
+      window.clearTimeout(t3)
+      window.removeEventListener('resize', fix)
+      observer?.disconnect()
+    }
+  }, [map])
+
+  return null
+}
 
 function ClusterLayer({
   fortresses,
@@ -77,7 +109,14 @@ export function ClusterMap({
   className = 'fortress-map',
 }: ClusterMapProps) {
   return (
-    <MapContainer center={[40.2, 44.5]} zoom={8} scrollWheelZoom className={className}>
+    <MapContainer
+      center={[40.2, 44.5]}
+      zoom={8}
+      scrollWheelZoom
+      className={className}
+      style={{ height: '100%', width: '100%' }}
+    >
+      <MapResizeFix />
       <TileLayer
         attribution='&copy; OpenStreetMap'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -88,18 +127,6 @@ export function ClusterMap({
         selectedSlug={selectedSlug}
         onSelect={onSelect}
       />
-      {fortresses.map((fortress) => (
-        <Marker
-          key={`hidden-${fortress.id}`}
-          position={[fortress.coordinates.lat, fortress.coordinates.lng]}
-          opacity={0}
-          eventHandlers={{ click: () => onSelect(fortress.slug) }}
-        >
-          <Popup>
-            <Link to={`/fortress/${fortress.slug}`}>{localized(fortress.name, locale)}</Link>
-          </Popup>
-        </Marker>
-      ))}
     </MapContainer>
   )
 }
