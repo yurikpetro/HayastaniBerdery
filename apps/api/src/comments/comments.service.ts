@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Inject, Injectable, NotFoundException } from '@nestjs/common'
 import type { CreateCommentDto, FortressComment } from '@hayastani/shared'
 import { mapComment } from '../mappers'
 import { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class CommentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async findByFortress(fortressId: string): Promise<FortressComment[]> {
     const records = await this.prisma.fortressComment.findMany({

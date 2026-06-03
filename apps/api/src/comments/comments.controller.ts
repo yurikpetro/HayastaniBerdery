@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Inject, Param, Post, Req, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import type { CreateCommentDto } from '@hayastani/shared'
 import { CommentsService } from './comments.service'
 
 @Controller('fortresses/:fortressId/comments')
 export class CommentsController {
-  constructor(private readonly commentsService: CommentsService) {}
+  constructor(@Inject(CommentsService) private readonly commentsService: CommentsService) {}
 
   @Get()
   findAll(@Param('fortressId') fortressId: string) {

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import type {
   CreateSubmissionDto,
@@ -13,8 +13,8 @@ import { PrismaService } from '../prisma/prisma.service'
 @Injectable()
 export class SubmissionsService {
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly fortressesService: FortressesService,
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(FortressesService) private readonly fortressesService: FortressesService,
   ) {}
 
   async findAll(): Promise<FortressSubmission[]> {

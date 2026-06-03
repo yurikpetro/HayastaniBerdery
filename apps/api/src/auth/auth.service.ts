@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common'
+import { ConflictException, Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import type { AuthTokens, AuthUser, LoginDto, RegisterDto } from '@hayastani/shared'
@@ -7,8 +7,8 @@ import { PrismaService } from '../prisma/prisma.service'
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly jwt: JwtService,
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(JwtService) private readonly jwt: JwtService,
   ) {}
 
   async register(dto: RegisterDto): Promise<AuthTokens & { user: AuthUser }> {

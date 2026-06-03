@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Inject, Injectable, NotFoundException } from '@nestjs/common'
 import type { Fortress, FortressListQuery, PaginatedResult } from '@hayastani/shared'
 import { Prisma } from '@prisma/client'
 import { mapFortress, scopeFromApi } from '../mappers'
@@ -12,7 +12,7 @@ const include = {
 
 @Injectable()
 export class FortressesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async findAll(query: FortressListQuery): Promise<PaginatedResult<Fortress>> {
     const page = query.page ?? 1

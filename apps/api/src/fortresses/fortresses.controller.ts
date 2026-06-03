@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Inject,
   Param,
   Patch,
   Post,
@@ -16,7 +17,9 @@ import { FortressesService } from './fortresses.service'
 
 @Controller('fortresses')
 export class FortressesController {
-  constructor(private readonly fortressesService: FortressesService) {}
+  constructor(
+    @Inject(FortressesService) private readonly fortressesService: FortressesService,
+  ) {}
 
   @Get()
   findAll(@Query() query: FortressListQuery) {

@@ -10,10 +10,9 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true,
     "skipLibCheck": true,
     "strict": true,
     "esModuleInterop": true
   },
-  "include": ["src", "prisma"]
+  "include": ["src"]
 }
