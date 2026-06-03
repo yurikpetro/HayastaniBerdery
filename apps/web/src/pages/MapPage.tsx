@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import type { GeographicScope, Locale } from '@hayastani/shared'
 import { ClusterMap } from '../components/map/ClusterMap'
 import { MapLayerSwitcher } from '../components/map/MapLayerSwitcher'
+import { MapMarkerModeSwitcher } from '../components/map/MapMarkerModeSwitcher'
 import {
   DEFAULT_MAP_LAYER,
   isValidMapLayer,
@@ -11,6 +12,13 @@ import {
   storeMapLayer,
   type MapLayerId,
 } from '../components/map/mapLayers'
+import {
+  DEFAULT_MAP_MARKER_MODE,
+  isValidMapMarkerMode,
+  loadStoredMapMarkerMode,
+  storeMapMarkerMode,
+  type MapMarkerMode,
+} from '../components/map/mapMarkerMode'
 import { FortressListItem } from '../components/fortress/FortressListItem'
 import { useFortresses } from '../hooks/useFortresses'
 import { localized, scopeLabels } from '../lib/labels'
@@ -26,11 +34,20 @@ export function MapPage() {
     const stored = loadStoredMapLayer()
     return isValidMapLayer(stored) ? stored : DEFAULT_MAP_LAYER
   })
+  const [markerMode, setMarkerMode] = useState<MapMarkerMode>(() => {
+    const stored = loadStoredMapMarkerMode()
+    return isValidMapMarkerMode(stored) ? stored : DEFAULT_MAP_MARKER_MODE
+  })
 
   const handleLayerChange = (id: MapLayerId) => {
     if (!isValidMapLayer(id)) return
     setMapLayerId(id)
     storeMapLayer(id)
+  }
+
+  const handleMarkerModeChange = (mode: MapMarkerMode) => {
+    setMarkerMode(mode)
+    storeMapMarkerMode(mode)
   }
 
   const { data, isLoading } = useFortresses({
@@ -68,8 +85,9 @@ export function MapPage() {
           </div>
         </div>
 
-        <div className="map-page__layer-switch pointer-events-none absolute right-3 top-3 z-[1000]">
+        <div className="map-page__map-controls pointer-events-none absolute right-3 top-3 z-[1000] flex flex-col items-end gap-2">
           <MapLayerSwitcher value={mapLayerId} onChange={handleLayerChange} />
+          <MapMarkerModeSwitcher value={markerMode} onChange={handleMarkerModeChange} />
         </div>
 
           <ClusterMap
@@ -79,6 +97,7 @@ export function MapPage() {
             onSelect={(slug) => setParams({ fortress: slug })}
             className="map-page__canvas"
             mapLayerId={mapLayerId}
+            markerMode={markerMode}
           />
         </div>
       </div>

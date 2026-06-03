@@ -63,5 +63,10 @@
     "esriImagery": "Спутник (Esri)",
     "esriHybrid": "Гибрид (Esri)",
     "cartoVoyager": "Carto Voyager"
+  },
+  "mapMarkers": {
+    "title": "Отображение на карте",
+    "pins": "Метки",
+    "photos": "Превью"
   }
 }

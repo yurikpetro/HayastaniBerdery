@@ -2,20 +2,17 @@ import { useEffect } from 'react'
 import { MapContainer, useMap } from 'react-leaflet'
 import { MapBaseLayers } from './MapBaseLayers'
 import type { MapLayerId } from './mapLayers'
+import type { MapMarkerMode } from './mapMarkerMode'
 import L from 'leaflet'
 import 'leaflet.markercluster'
 import type { Fortress } from '@hayastani/shared'
-import { localized, primaryPhoto } from '../../lib/labels'
-
-const icon = new L.Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-})
+import { localized } from '../../lib/labels'
+import {
+  buildFortressPopupHtml,
+  createFortressMarkerIcon,
+  createPhotoClusterIcon,
+  fortressCoverUrl,
+} from './fortressMarkers'
 
 function MapResizeFix() {
   const map = useMap()
@@ -55,34 +52,47 @@ function ClusterLayer({
   locale,
   selectedSlug,
   onSelect,
+  markerMode,
 }: {
   fortresses: Fortress[]
   locale: 'hy' | 'ru' | 'en'
   selectedSlug?: string
   onSelect: (slug: string) => void
+  markerMode: MapMarkerMode
 }) {
   const map = useMap()
 
   useEffect(() => {
-    const cluster = L.markerClusterGroup()
+    const cluster =
+      markerMode === 'photos'
+        ? L.markerClusterGroup({
+            showCoverageOnHover: false,
+            maxClusterRadius: 56,
+            spiderfyOnMaxZoom: true,
+            iconCreateFunction: (group) => createPhotoClusterIcon(group),
+          })
+        : L.markerClusterGroup()
+
     fortresses.forEach((fortress) => {
-      const marker = L.marker([fortress.coordinates.lat, fortress.coordinates.lng], { icon })
-      const photo = primaryPhoto(fortress)
-      marker.bindPopup(`
-        <div style="min-width:200px">
-          ${photo ? `<img src="${photo.url}" alt="" style="width:100%;height:100px;object-fit:cover;border-radius:8px;margin-bottom:8px"/>` : ''}
-          <strong>${localized(fortress.name, locale)}</strong>
-          <p style="margin:8px 0;font-size:13px">${localized(fortress.summary, locale)}</p>
-        </div>
-      `)
+      const selected = selectedSlug === fortress.slug
+      const marker = L.marker(
+        [fortress.coordinates.lat, fortress.coordinates.lng],
+        {
+          icon: createFortressMarkerIcon(fortress, markerMode, selected),
+          coverUrl: fortressCoverUrl(fortress),
+        } as L.MarkerOptions & { coverUrl?: string | null },
+      )
+
+      marker.bindPopup(buildFortressPopupHtml(fortress, locale, localized))
       marker.on('click', () => onSelect(fortress.slug))
       cluster.addLayer(marker)
     })
+
     map.addLayer(cluster)
     return () => {
       map.removeLayer(cluster)
     }
-  }, [fortresses, locale, map, onSelect])
+  }, [fortresses, locale, map, onSelect, markerMode, selectedSlug])
 
   useEffect(() => {
     if (!selectedSlug) return
@@ -102,6 +112,7 @@ interface ClusterMapProps {
   onSelect: (slug: string) => void
   className?: string
   mapLayerId: MapLayerId
+  markerMode: MapMarkerMode
 }
 
 export function ClusterMap({
@@ -111,6 +122,7 @@ export function ClusterMap({
   onSelect,
   className = 'fortress-map',
   mapLayerId,
+  markerMode,
 }: ClusterMapProps) {
   return (
     <MapContainer
@@ -127,6 +139,7 @@ export function ClusterMap({
         locale={locale}
         selectedSlug={selectedSlug}
         onSelect={onSelect}
+        markerMode={markerMode}
       />
     </MapContainer>
   )

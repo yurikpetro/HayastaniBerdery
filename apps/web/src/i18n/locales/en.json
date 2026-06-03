@@ -63,5 +63,10 @@
     "esriImagery": "Satellite (Esri)",
     "esriHybrid": "Hybrid (Esri)",
     "cartoVoyager": "Carto Voyager"
+  },
+  "mapMarkers": {
+    "title": "Map display",
+    "pins": "Pins",
+    "photos": "Previews"
   }
 }

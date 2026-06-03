@@ -63,5 +63,10 @@
     "esriImagery": "Արբանյակ (Esri)",
     "esriHybrid": "Հիբրիդ (Esri)",
     "cartoVoyager": "Carto Voyager"
+  },
+  "mapMarkers": {
+    "title": "Քարտեզի ցուցադրում",
+    "pins": "Նշաններ",
+    "photos": "Նախադիտում"
   }
 }
