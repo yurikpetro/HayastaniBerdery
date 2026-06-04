@@ -69,7 +69,16 @@ export function MapTimelineFilter({
       </div>
 
       <div className="map-timeline__footer">
-        <span>{formatYear(MAP_TIMELINE_DOMAIN.from, bceLabel)}</span>
+        <span className="map-timeline__start-date">
+          {formatYear(MAP_TIMELINE_DOMAIN.from, bceLabel)}
+          <span
+            className="map-timeline__hint"
+            aria-label={t('mapTimeline.erebuniHint')}
+            title={t('mapTimeline.erebuniHint')}
+          >
+            ?
+          </span>
+        </span>
         <span>{t('mapTimeline.visible', { visible: visibleCount, total: totalCount })}</span>
         <span>{formatYear(MAP_TIMELINE_DOMAIN.to, bceLabel)}</span>
       </div>

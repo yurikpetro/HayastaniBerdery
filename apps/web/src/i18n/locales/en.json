@@ -71,7 +71,16 @@
     "intro": "Fill in the details. An admin will review before publication.",
     "signInTitle": "Log in to submit a fortress",
     "signInIntro": "This links the submission to your profile so we can clarify details before publication.",
+    "name": "Name",
+    "description": "Description",
+    "pickCoordinates": "Click on the map to set coordinates",
+    "coordinates": {
+      "lat": "Latitude",
+      "lng": "Longitude"
+    },
     "note": "How do you know about this place?",
+    "contact": "Contact for follow-up",
+    "failed": "Failed to submit",
     "send": "Send for moderation"
   },
   "auth": {
@@ -83,6 +92,7 @@
   },
   "admin": {
     "title": "Admin panel",
+    "backToSite": "Back to site",
     "submissions": "Submissions",
     "fortresses": "Fortresses",
     "audit": "Audit log",
@@ -129,6 +139,7 @@
     "from": "Period start",
     "to": "Period end",
     "bce": "BCE",
+    "erebuniHint": "782 BCE is used as the start date because it is the founding year of Erebuni Fortress - the oldest fortress in Armenia.",
     "visible": "Showing {{visible}} of {{total}}"
   }
 }

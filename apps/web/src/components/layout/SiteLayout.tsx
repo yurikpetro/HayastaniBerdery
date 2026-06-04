@@ -6,6 +6,12 @@ import { useAuth } from '../../auth/AuthContext'
 
 const locales: Locale[] = ['hy', 'ru', 'en']
 
+const localeLabels: Record<Locale, string> = {
+  hy: 'Հայ',
+  ru: 'Рус',
+  en: 'Eng',
+}
+
 export function SiteLayout() {
   const { t, i18n } = useTranslation()
   const { user, logout, isAdmin } = useAuth()
@@ -108,7 +114,7 @@ export function SiteLayout() {
                 key={locale}
                 type="button"
                 onClick={() => i18n.changeLanguage(locale)}
-                className={`rounded px-2 py-0.5 text-xs font-semibold uppercase ${
+                className={`rounded px-2 py-0.5 text-xs font-semibold ${
                   isMapHome
                     ? i18n.language === locale
                       ? 'bg-white text-stone-900'
@@ -118,7 +124,7 @@ export function SiteLayout() {
                       : 'bg-white text-stone-700'
                 }`}
               >
-                {locale}
+                {localeLabels[locale]}
               </button>
             ))}
             {user ? (

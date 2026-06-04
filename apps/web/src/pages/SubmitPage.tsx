@@ -44,10 +44,9 @@ export function SubmitPage() {
   const { t } = useTranslation()
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [step, setStep] = useState(1)
   const [note, setNote] = useState('')
   const [draft, setDraft] = useState(emptyFortress())
-  const [socialUrl, setSocialUrl] = useState('')
+  const [contact, setContact] = useState('')
   const [error, setError] = useState('')
 
   if (!user) {
@@ -72,134 +71,115 @@ export function SubmitPage() {
         <p className="mt-2 text-stone-600">{t('submitForm.intro')}</p>
       </div>
 
-      <div className="flex gap-2 text-sm">
-        {[1, 2, 3].map((n) => (
-          <span
-            key={n}
-            className={`rounded-full px-3 py-1 ${step === n ? 'bg-terracotta text-white' : 'bg-stone-200'}`}
-          >
-            {n}
-          </span>
-        ))}
-      </div>
+      <form
+        className="space-y-4 rounded-2xl border border-white/60 bg-white/85 p-6 shadow-xl shadow-stone-900/10 backdrop-blur-md"
+        onSubmit={async (event) => {
+          event.preventDefault()
+          try {
+            const submitterNote = [
+              note,
+              contact ? `${t('submitForm.contact')}: ${contact}` : '',
+            ].filter(Boolean).join('\n\n')
+            const slug = draft.name.en.toLowerCase().replace(/\s+/g, '-') || `fort-${Date.now()}`
+            await api.submissions.create({
+              submitterNote,
+              proposedFortress: {
+                ...draft,
+                slug,
+                sources: [],
+              },
+            })
+            navigate('/catalog')
+          } catch (e) {
+            setError(e instanceof Error ? e.message : t('submitForm.failed'))
+          }
+        }}
+      >
+        <label className="block text-sm">
+          {t('submitForm.name')}
+          <input
+            className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
+            value={draft.name.ru}
+            onChange={(e) => {
+              const value = e.target.value
+              setDraft({ ...draft, name: { hy: value, ru: value, en: value } })
+            }}
+          />
+        </label>
 
-      {step === 1 ? (
-        <div className="space-y-3 rounded-2xl border border-white/60 bg-white/85 p-6 shadow-xl shadow-stone-900/10 backdrop-blur-md">
-          {(['hy', 'ru', 'en'] as const).map((locale) => (
-            <label key={locale} className="block text-sm">
-              Name ({locale.toUpperCase()})
-              <input
-                className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
-                value={draft.name[locale]}
-                onChange={(e) =>
-                  setDraft({ ...draft, name: { ...draft.name, [locale]: e.target.value } })
-                }
-              />
-            </label>
-          ))}
-          <label className="block text-sm">
-            Summary (RU)
-            <textarea
-              className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
-              rows={3}
-              value={draft.summary.ru}
-              onChange={(e) =>
-                setDraft({ ...draft, summary: { ...draft.summary, ru: e.target.value } })
-              }
-            />
-          </label>
-          <button
-            type="button"
-            onClick={() => setStep(2)}
-            className="rounded-full bg-terracotta px-5 py-2 text-white"
-          >
-            Next
-          </button>
-        </div>
-      ) : null}
+        <label className="block text-sm">
+          {t('submitForm.description')}
+          <textarea
+            className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
+            rows={4}
+            value={draft.summary.ru}
+            onChange={(e) => {
+              const value = e.target.value
+              setDraft({ ...draft, summary: { hy: value, ru: value, en: value } })
+            }}
+          />
+        </label>
 
-      {step === 2 ? (
-        <div className="space-y-3 rounded-2xl border border-white/60 bg-white/85 p-6 shadow-xl shadow-stone-900/10 backdrop-blur-md">
-          <p className="text-sm text-stone-600">Click on the map to set coordinates</p>
-          <MapContainer center={[draft.coordinates.lat, draft.coordinates.lng]} zoom={9} className="h-72 rounded-xl">
+        <div className="space-y-3 border-t border-stone-200 pt-4">
+          <p className="text-sm text-stone-600">{t('submitForm.pickCoordinates')}</p>
+          <MapContainer center={[draft.coordinates.lat, draft.coordinates.lng]} zoom={9} className="h-[32rem] rounded-xl">
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker position={[draft.coordinates.lat, draft.coordinates.lng]} />
             <PickPoint
               onPick={(lat, lng) => setDraft({ ...draft, coordinates: { lat, lng } })}
             />
           </MapContainer>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {(['lat', 'lng'] as const).map((coordinate) => (
+              <label key={coordinate} className="block text-sm">
+                {t(`submitForm.coordinates.${coordinate}`)}
+                <input
+                  type="number"
+                  step="any"
+                  className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
+                  value={draft.coordinates[coordinate]}
+                  onChange={(e) => {
+                    const value = e.currentTarget.valueAsNumber
+                    if (!Number.isFinite(value)) return
+                    setDraft({
+                      ...draft,
+                      coordinates: { ...draft.coordinates, [coordinate]: value },
+                    })
+                  }}
+                />
+              </label>
+            ))}
+          </div>
           <p className="text-sm">
             {draft.coordinates.lat.toFixed(4)}, {draft.coordinates.lng.toFixed(4)}
           </p>
-          <div className="flex gap-2">
-            <button type="button" onClick={() => setStep(1)} className="rounded-full border px-5 py-2">
-              Back
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep(3)}
-              className="rounded-full bg-terracotta px-5 py-2 text-white"
-            >
-              Next
-            </button>
-          </div>
         </div>
-      ) : null}
 
-      {step === 3 ? (
-        <div className="space-y-3 rounded-2xl border border-white/60 bg-white/85 p-6 shadow-xl shadow-stone-900/10 backdrop-blur-md">
-          <label className="block text-sm">
-            {t('submitForm.note')}
-            <textarea
-              className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
-              rows={3}
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-            />
-          </label>
-          <label className="block text-sm">
-            Social / reel URL
-            <input
-              className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
-              value={socialUrl}
-              onChange={(e) => setSocialUrl(e.target.value)}
-            />
-          </label>
-          {error ? <p className="text-sm text-red-600">{error}</p> : null}
-          <button
-            type="button"
-            className="rounded-full bg-forest px-5 py-2 text-white"
-            onClick={async () => {
-              try {
-                const slug = draft.name.en.toLowerCase().replace(/\s+/g, '-') || `fort-${Date.now()}`
-                await api.submissions.create({
-                  submitterNote: note,
-                  proposedFortress: {
-                    ...draft,
-                    slug,
-                    sources: socialUrl
-                      ? [
-                          {
-                            id: 'social',
-                            type: 'social',
-                            title: 'Social reference',
-                            url: socialUrl,
-                            language: 'ru',
-                          },
-                        ]
-                      : [],
-                  },
-                })
-                navigate('/catalog')
-              } catch (e) {
-                setError(e instanceof Error ? e.message : 'Failed')
-              }
-            }}
-          >
-            {t('submitForm.send')}
-          </button>
-        </div>
-      ) : null}
+        <label className="block text-sm">
+          {t('submitForm.note')}
+          <textarea
+            className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
+            rows={3}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+          />
+        </label>
+        <label className="block text-sm">
+          {t('submitForm.contact')}
+          <input
+            className="mt-1 w-full rounded-xl border border-stone-300 bg-white/95 px-3 py-2"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
+          />
+        </label>
+        {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        <button
+          type="submit"
+          className="rounded-full bg-forest px-5 py-2 text-white"
+        >
+          {t('submitForm.send')}
+        </button>
+      </form>
     </div>
   )
 }
