@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { AttributionControl, MapContainer, useMap } from 'react-leaflet'
 import { ArtsakhHyLabelsLayer } from './ArtsakhHyLabelsLayer'
 import { MapBaseLayers } from './MapBaseLayers'
@@ -63,6 +63,9 @@ function ClusterLayer({
   markerMode: MapMarkerMode
 }) {
   const map = useMap()
+  const onSelectRef = useRef(onSelect)
+  onSelectRef.current = onSelect
+  const markersBySlugRef = useRef<Map<string, L.Marker>>(new Map())
 
   useEffect(() => {
     const cluster =
@@ -75,33 +78,49 @@ function ClusterLayer({
           })
         : L.markerClusterGroup()
 
+    const markersBySlug = new Map<string, L.Marker>()
+
     fortresses.forEach((fortress) => {
-      const selected = selectedSlug === fortress.slug
       const marker = L.marker(
         [fortress.coordinates.lat, fortress.coordinates.lng],
         {
-          icon: createFortressMarkerIcon(fortress, markerMode, selected),
+          icon: createFortressMarkerIcon(fortress, markerMode, false),
           coverUrl: fortressCoverUrl(fortress),
         } as L.MarkerOptions & { coverUrl?: string | null },
       )
 
       marker.bindPopup(buildFortressPopupHtml(fortress, locale, localized))
-      marker.on('click', () => onSelect(fortress.slug))
+      marker.on('click', () => onSelectRef.current(fortress.slug))
       cluster.addLayer(marker)
+      markersBySlug.set(fortress.slug, marker)
     })
 
+    markersBySlugRef.current = markersBySlug
     map.addLayer(cluster)
     return () => {
       map.removeLayer(cluster)
+      markersBySlugRef.current.clear()
     }
-  }, [fortresses, locale, map, onSelect, markerMode, selectedSlug])
+  }, [fortresses, locale, map, markerMode])
+
+  useEffect(() => {
+    if (markerMode !== 'photos') return
+    for (const fortress of fortresses) {
+      const marker = markersBySlugRef.current.get(fortress.slug)
+      if (!marker) continue
+      marker.setIcon(
+        createFortressMarkerIcon(fortress, markerMode, selectedSlug === fortress.slug),
+      )
+    }
+  }, [selectedSlug, markerMode, fortresses])
 
   useEffect(() => {
     if (!selectedSlug) return
     const fortress = fortresses.find((f) => f.slug === selectedSlug)
-    if (fortress) {
-      map.flyTo([fortress.coordinates.lat, fortress.coordinates.lng], 11, { duration: 0.8 })
-    }
+    if (!fortress) return
+
+    map.flyTo([fortress.coordinates.lat, fortress.coordinates.lng], 11, { duration: 0.8 })
+    markersBySlugRef.current.get(selectedSlug)?.openPopup()
   }, [selectedSlug, fortresses, map])
 
   return null

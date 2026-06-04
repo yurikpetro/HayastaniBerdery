@@ -2,9 +2,6 @@ import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import type { Fortress } from '@hayastani/shared'
 import { seedFortresses } from '../../web/src/data/seed'
-import { generateExtendedFortresses } from './extended-fortresses'
-
-const allFortresses = [...seedFortresses, ...generateExtendedFortresses()]
 
 const prisma = new PrismaClient()
 
@@ -12,12 +9,11 @@ function enumValue(value: string) {
   return value.replace(/-/g, '_')
 }
 
-async function upsertFortress(f: Fortress) {
+async function replaceFortress(f: Fortress) {
+  await prisma.fortress.deleteMany({ where: { slug: f.slug } })
   const locales = ['hy', 'ru', 'en'] as const
-  await prisma.fortress.upsert({
-    where: { slug: f.slug },
-    update: {},
-    create: {
+  await prisma.fortress.create({
+    data: {
       slug: f.slug,
       scope: enumValue(f.scope) as never,
       lat: f.coordinates.lat,
@@ -96,11 +92,17 @@ async function main() {
     },
   })
 
-  for (const fortress of allFortresses) {
-    await upsertFortress(fortress)
+  const slugs = seedFortresses.map((f) => f.slug)
+
+  for (const fortress of seedFortresses) {
+    await replaceFortress(fortress)
   }
 
-  console.log(`Seeded ${allFortresses.length} fortresses`)
+  const removed = await prisma.fortress.deleteMany({
+    where: { slug: { notIn: slugs } },
+  })
+
+  console.log(`Seeded ${seedFortresses.length} fortresses, removed ${removed.count} obsolete entries`)
 }
 
 main()

@@ -1,5 +1,7 @@
 # Deployment
 
+Database: **PostgreSQL 16** (Docker `postgres:16`). MySQL is not used in v1. See [DATABASE.md](DATABASE.md).
+
 ## Prerequisites
 
 - Docker and Docker Compose
@@ -74,7 +76,7 @@ Set environment variables in `.env.production`:
 
 ## Import content
 
-Seed includes 4 curated fortresses + 30 generated entries (34 total).
+Seed includes 20 real Armenian fortresses with verified coordinates and descriptions.
 
 To re-seed:
 

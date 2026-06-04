@@ -32,10 +32,11 @@ Open http://localhost:5173
 | `npm run dev:api` | API only |
 | `npm run dev:all` | API + web |
 | `npm run build` | Build all packages |
-| `npm run db:seed` | Seed database (34 fortresses) |
+| `npm run db:seed` | Seed database (20 fortresses) |
 
 ## Documentation
 
+- [Database (PostgreSQL vs MySQL)](docs/DATABASE.md)
 - [Data model](docs/DATA_MODEL.md)
 - [Moderation](docs/MODERATION.md)
 - [Deployment](docs/DEPLOYMENT.md)

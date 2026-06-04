@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { GeographicScope, Locale } from '@hayastani/shared'
@@ -83,6 +83,13 @@ export function MapPage() {
     [fortresses, yearRange],
   )
 
+  const handleFortressSelect = useCallback(
+    (slug: string) => {
+      setParams({ fortress: slug })
+    },
+    [setParams],
+  )
+
   return (
     <div className="map-page flex h-full min-h-0 w-full">
       <div className="relative min-h-0 min-w-0 flex-1 self-stretch">
@@ -132,7 +139,7 @@ export function MapPage() {
             fortresses={visibleFortresses}
             locale={locale}
             selectedSlug={selectedSlug}
-            onSelect={(slug) => setParams({ fortress: slug })}
+            onSelect={handleFortressSelect}
             className="map-page__canvas"
             mapLayerId={mapLayerId}
             markerMode={markerMode}
@@ -161,7 +168,7 @@ export function MapPage() {
                 fortress={fortress}
                 locale={locale}
                 active={selectedSlug === fortress.slug}
-                onSelect={() => setParams({ fortress: fortress.slug })}
+                onSelect={() => handleFortressSelect(fortress.slug)}
               />
             ))
           ) : (

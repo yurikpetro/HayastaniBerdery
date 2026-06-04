@@ -81,4 +81,8 @@ This keeps politically and geographically sensitive objects filterable without m
 - `fortress_submissions`
 - `audit_logs`
 
-For PostgreSQL, store coordinates in `geography(Point, 4326)` and index with GiST.
+## Storage (implemented vs planned)
+
+**MVP (implemented):** `fortresses.lat` and `fortresses.lng` as floats; map API filters with a bounding box (`gte`/`lte`). `alternativeNames` is a PostgreSQL text array.
+
+**Later (optional):** on PostgreSQL with PostGIS, coordinates can move to `geography(Point, 4326)` with a GiST index for radius and polygon queries. See [DATABASE.md](DATABASE.md).

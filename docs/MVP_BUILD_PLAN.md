@@ -18,7 +18,7 @@ Deliver a public fortress registry with:
 | Frontend | React + TypeScript + Vite | Fast iteration, strong map ecosystem |
 | Map | Leaflet + react-leaflet | PastVu-like interaction, easy clustering later |
 | Backend | Node.js + Express or NestJS | Good fit for CRUD + moderation APIs |
-| Database | PostgreSQL + PostGIS | Coordinates, filters, full-text search |
+| Database | PostgreSQL 16 (PostGIS optional later) | Coordinates, bbox filters; full-text / spatial when needed — see [DATABASE.md](DATABASE.md) |
 | Media | S3-compatible storage | Photo uploads and resizing |
 | Auth | Email/password or OAuth | Required for submissions and comments |
 
