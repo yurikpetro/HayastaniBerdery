@@ -187,7 +187,7 @@
     "from": "Period start",
     "to": "Period end",
     "bce": "BCE",
-    "erebuniHint": "782 BCE is used as the start date because it is the founding year of Erebuni Fortress - the oldest fortress in Armenia.",
+    "erebuniHint": "2000 BCE is used as the start date to include early Cyclopean and Bronze Age fortresses.",
     "visible": "Showing {{visible}} of {{total}}"
   }
 }

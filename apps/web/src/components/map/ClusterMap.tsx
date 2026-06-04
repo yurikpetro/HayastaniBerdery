@@ -59,7 +59,7 @@ function ClusterLayer({
 }: {
   fortresses: Fortress[]
   locale: 'hy' | 'ru' | 'en'
-  selectedSlug?: string
+  selectedSlug: string | undefined
   onSelect: (slug: string) => void
   markerMode: MapMarkerMode
 }) {
@@ -69,6 +69,7 @@ function ClusterLayer({
   const onSelectRef = useRef(onSelect)
   onSelectRef.current = onSelect
   const markersBySlugRef = useRef<Map<string, L.Marker>>(new Map())
+  const focusedSlugRef = useRef<string | undefined>(undefined)
 
   useEffect(() => {
     const cluster =
@@ -122,10 +123,16 @@ function ClusterLayer({
   }, [selectedSlug, markerMode, fortresses])
 
   useEffect(() => {
-    if (!selectedSlug) return
+    if (!selectedSlug) {
+      focusedSlugRef.current = undefined
+      return
+    }
+    if (focusedSlugRef.current === selectedSlug) return
+
     const fortress = fortresses.find((f) => f.slug === selectedSlug)
     if (!fortress) return
 
+    focusedSlugRef.current = selectedSlug
     map.flyTo([fortress.coordinates.lat, fortress.coordinates.lng], 11, { duration: 0.8 })
     markersBySlugRef.current.get(selectedSlug)?.openPopup()
   }, [selectedSlug, fortresses, map])
@@ -136,7 +143,7 @@ function ClusterLayer({
 interface ClusterMapProps {
   fortresses: Fortress[]
   locale: 'hy' | 'ru' | 'en'
-  selectedSlug?: string
+  selectedSlug: string | undefined
   onSelect: (slug: string) => void
   className?: string
   mapLayerId: MapLayerId

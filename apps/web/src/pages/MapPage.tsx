@@ -132,6 +132,7 @@ export function MapPage() {
             onChange={setYearRange}
             visibleCount={visibleFortresses.length}
             totalCount={fortresses.length}
+            fortresses={fortresses}
           />
         </div>
 

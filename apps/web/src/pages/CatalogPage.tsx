@@ -183,7 +183,12 @@ export function CatalogPage() {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredItems.map((fortress) => (
-            <FortressPreview key={fortress.id} fortress={fortress} locale={locale} />
+            <FortressPreview
+              key={fortress.id}
+              fortress={fortress}
+              locale={locale}
+              search={search}
+            />
           ))}
         </div>
       )}

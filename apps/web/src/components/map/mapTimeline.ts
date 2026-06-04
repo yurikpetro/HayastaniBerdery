@@ -6,12 +6,12 @@ export interface YearRange {
 }
 
 export const MAP_TIMELINE_DOMAIN: YearRange = {
-  from: -782,
+  from: -2000,
   to: 1900,
 }
 
 const periodRanges: Record<HistoricalPeriod, YearRange | null> = {
-  'bronze-age': { from: -3300, to: -1200 },
+  'bronze-age': { from: MAP_TIMELINE_DOMAIN.from, to: -1200 },
   urartian: { from: MAP_TIMELINE_DOMAIN.from, to: -600 },
   antique: { from: -600, to: 400 },
   'early-medieval': { from: 301, to: 700 },
@@ -48,7 +48,14 @@ function parseCentury(value: string) {
   return romanToNumber(value)
 }
 
-function centuryToYearRange(century: number): YearRange {
+function centuryToYearRange(century: number, isBce: boolean): YearRange {
+  if (isBce) {
+    return {
+      from: -century * 100,
+      to: -(century - 1) * 100 - 1,
+    }
+  }
+
   return {
     from: (century - 1) * 100 + 1,
     to: century * 100,
@@ -57,16 +64,30 @@ function centuryToYearRange(century: number): YearRange {
 
 export function getFortressYearRange(fortress: Fortress): YearRange | null {
   const foundation = fortress.foundation.toLowerCase()
+  const bceYearMatch = foundation.match(/\b(\d{3,4})(?:\s*(?:-|–|—|to)\s*(\d{3,4}))?\s*(?:bc|bce)\b/)
+
+  if (bceYearMatch?.[1]) {
+    const firstYear = Number(bceYearMatch[1])
+    const secondYear = Number(bceYearMatch[2] ?? bceYearMatch[1])
+    return {
+      from: -Math.max(firstYear, secondYear),
+      to: -Math.min(firstYear, secondYear),
+    }
+  }
+
   const centuryMatch = foundation.match(
-    /\b([ivxlcdm]+|\d+)(?:\s*(?:-|–|—|to)\s*([ivxlcdm]+|\d+))?\s*centur/,
+    /\b([ivxlcdm]+|\d+)(?:st|nd|rd|th)?(?:\s*(?:-|–|—|to)\s*([ivxlcdm]+|\d+)(?:st|nd|rd|th)?)?\s*centur(?:y|ies)(?:\s*(bc|bce|ad|ce))?/,
   )
 
-  if (centuryMatch) {
+  if (centuryMatch?.[1]) {
     const fromCentury = parseCentury(centuryMatch[1])
     const toCentury = parseCentury(centuryMatch[2] ?? centuryMatch[1])
     if (fromCentury && toCentury) {
-      const from = centuryToYearRange(Math.min(fromCentury, toCentury)).from
-      const to = centuryToYearRange(Math.max(fromCentury, toCentury)).to
+      const isBce = centuryMatch[3]?.startsWith('bc') ?? false
+      const fromRange = centuryToYearRange(fromCentury, isBce)
+      const toRange = centuryToYearRange(toCentury, isBce)
+      const from = Math.min(fromRange.from, toRange.from)
+      const to = Math.max(fromRange.to, toRange.to)
       return { from, to }
     }
   }
@@ -80,6 +101,17 @@ export function getFortressYearRange(fortress: Fortress): YearRange | null {
   }
 
   return periodRanges[fortress.period]
+}
+
+export function getFortressTimelineYear(fortress: Fortress) {
+  const range = getFortressYearRange(fortress)
+  if (!range || range.to < MAP_TIMELINE_DOMAIN.from || range.from > MAP_TIMELINE_DOMAIN.to) {
+    return null
+  }
+
+  const from = Math.max(range.from, MAP_TIMELINE_DOMAIN.from)
+  const to = Math.min(range.to, MAP_TIMELINE_DOMAIN.to)
+  return Math.round((from + to) / 2)
 }
 
 export function formatYear(year: number, bceLabel = 'BCE') {

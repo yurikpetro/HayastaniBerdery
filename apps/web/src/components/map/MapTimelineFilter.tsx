@@ -1,11 +1,20 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { formatYear, MAP_TIMELINE_DOMAIN, type YearRange } from './mapTimeline'
+import type { Fortress, Locale } from '@hayastani/shared'
+import { localized } from '../../lib/labels'
+import {
+  formatYear,
+  getFortressTimelineYear,
+  MAP_TIMELINE_DOMAIN,
+  type YearRange,
+} from './mapTimeline'
 
 interface MapTimelineFilterProps {
   value: YearRange
   onChange: (value: YearRange) => void
   visibleCount: number
   totalCount: number
+  fortresses: Fortress[]
 }
 
 const STEP = 25
@@ -24,9 +33,28 @@ export function MapTimelineFilter({
   onChange,
   visibleCount,
   totalCount,
+  fortresses,
 }: MapTimelineFilterProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language as Locale
   const bceLabel = t('mapTimeline.bce')
+  const timelineSpan = MAP_TIMELINE_DOMAIN.to - MAP_TIMELINE_DOMAIN.from
+  const ticks = useMemo(
+    () =>
+      fortresses
+        .map((fortress) => {
+          const year = getFortressTimelineYear(fortress)
+          if (year == null) return null
+
+          return {
+            fortress,
+            year,
+            position: ((year - MAP_TIMELINE_DOMAIN.from) / timelineSpan) * 100,
+          }
+        })
+        .filter((tick): tick is NonNullable<typeof tick> => tick != null),
+    [fortresses, timelineSpan],
+  )
 
   return (
     <div className="map-timeline pointer-events-auto">
@@ -38,6 +66,16 @@ export function MapTimelineFilter({
       </div>
 
       <div className="map-timeline__sliders">
+        <div className="map-timeline__ticks" aria-hidden="true">
+          {ticks.map(({ fortress, year, position }) => (
+            <span
+              key={fortress.slug}
+              className="map-timeline__tick"
+              style={{ left: `${position}%` }}
+              title={`${localized(fortress.name, locale)} · ${formatYear(year, bceLabel)}`}
+            />
+          ))}
+        </div>
         <input
           type="range"
           min={MAP_TIMELINE_DOMAIN.from}
