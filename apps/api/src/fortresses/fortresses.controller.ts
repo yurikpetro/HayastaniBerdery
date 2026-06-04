@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -47,5 +48,12 @@ export class FortressesController {
     @Req() req: { user: { id: string } },
   ) {
     return this.fortressesService.replace(id, body, req.user.id)
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin', 'moderator')
+  remove(@Param('id') id: string, @Req() req: { user: { id: string } }) {
+    return this.fortressesService.remove(id, req.user.id)
   }
 }

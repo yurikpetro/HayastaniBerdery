@@ -120,6 +120,25 @@ export class FortressesService {
     return mapFortress(record)
   }
 
+  async remove(id: string, userId?: string): Promise<{ id: string; deleted: true }> {
+    const existing = await this.prisma.fortress.findUnique({ where: { id } })
+    if (!existing) throw new NotFoundException('Fortress not found')
+
+    await this.prisma.$transaction([
+      this.prisma.auditLog.create({
+        data: {
+          fortressId: id,
+          userId,
+          action: 'fortress.deleted',
+          details: { slug: existing.slug },
+        },
+      }),
+      this.prisma.fortress.delete({ where: { id } }),
+    ])
+
+    return { id, deleted: true }
+  }
+
   private buildFortressData(payload: Fortress): Prisma.FortressCreateInput {
     const locales = ['hy', 'ru', 'en'] as const
     return {

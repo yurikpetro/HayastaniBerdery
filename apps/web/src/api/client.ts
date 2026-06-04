@@ -64,6 +64,18 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify(fortress),
       }),
+    archive: (id: string, fortress: Fortress) =>
+      request<Fortress>(`/fortresses/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ ...fortress, status: 'archived' }),
+      }),
+    restore: (id: string, fortress: Fortress) =>
+      request<Fortress>(`/fortresses/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ ...fortress, status: 'published' }),
+      }),
+    delete: (id: string) =>
+      request<{ id: string; deleted: true }>(`/fortresses/${id}`, { method: 'DELETE' }),
   },
   comments: {
     list: (fortressId: string) =>

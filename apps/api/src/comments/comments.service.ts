@@ -30,7 +30,7 @@ export class CommentsService {
     let currentId: string | null = commentId
 
     while (currentId) {
-      const row = await this.prisma.fortressComment.findFirst({
+      const row: { parentId: string | null } | null = await this.prisma.fortressComment.findFirst({
         where: { id: currentId, fortressId },
         select: { parentId: true },
       })
