@@ -54,7 +54,17 @@
     "formatItalic": "Շեղ",
     "formatUnderline": "Ընդգծված",
     "formatQuote": "Քաղվածք",
-    "formatEmoji": "Էմոջի"
+    "formatEmoji": "Էմոջի",
+    "emojiCat": {
+      "smileys": "Դեմքեր",
+      "gestures": "Ժեստեր",
+      "hearts": "Սրտեր",
+      "nature": "Բնություն",
+      "travel": "Ճանապարհորդություն",
+      "food": "Սնունդ",
+      "objects": "Առարկաներ",
+      "flags": "Դրոշներ"
+    }
   },
   "fortressesCount_one": "{{count}} բերդ",
   "fortressesCount_other": "{{count}} բերդ",

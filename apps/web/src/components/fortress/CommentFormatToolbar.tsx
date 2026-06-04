@@ -1,32 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import type { CommentEmojiCategoryId } from '../../data/commentEmojiCategories'
 import { applyQuoteLines, applyWrap, insertText, type SelectionRange } from '../../lib/commentEditor'
+import { CommentEmojiPicker } from './CommentEmojiPicker'
 
-const COMMENT_EMOJIS = [
-  '😀',
-  '😊',
-  '🙂',
-  '👍',
-  '👏',
-  '❤️',
-  '🔥',
-  '✨',
-  '🎉',
-  '🙏',
-  '😍',
-  '🤔',
-  '😢',
-  '💪',
-  '⭐',
-  '🏰',
-  '🇦🇲',
-  '🌄',
-  '📷',
-  '🗺️',
-]
-
-const EMOJI_PICKER_ESTIMATE_HEIGHT = 200
+const EMOJI_PICKER_ESTIMATE_HEIGHT = 280
+const EMOJI_PICKER_ESTIMATE_WIDTH = 320
 
 type CommentFormatToolbarProps = {
   value: string
@@ -52,7 +32,7 @@ function restoreSelection(textarea: HTMLTextAreaElement, range: SelectionRange) 
 function getPickerPosition(anchor: HTMLElement, panel?: HTMLElement | null): PickerPosition {
   const rect = anchor.getBoundingClientRect()
   const panelHeight = panel?.offsetHeight ?? EMOJI_PICKER_ESTIMATE_HEIGHT
-  const panelWidth = panel?.offsetWidth ?? 188
+  const panelWidth = panel?.offsetWidth ?? EMOJI_PICKER_ESTIMATE_WIDTH
   const openUp = rect.top >= panelHeight + 12
 
   const left = Math.max(8, Math.min(rect.right - panelWidth, window.innerWidth - panelWidth - 8))
@@ -75,6 +55,7 @@ function getPickerPosition(anchor: HTMLElement, panel?: HTMLElement | null): Pic
 export function CommentFormatToolbar({ value, onChange, textareaRef }: CommentFormatToolbarProps) {
   const { t } = useTranslation()
   const [emojiOpen, setEmojiOpen] = useState(false)
+  const [emojiCategory, setEmojiCategory] = useState<CommentEmojiCategoryId>('smileys')
   const [pickerPos, setPickerPos] = useState<PickerPosition | null>(null)
   const emojiBtnRef = useRef<HTMLButtonElement>(null)
   const emojiPanelRef = useRef<HTMLDivElement>(null)
@@ -99,7 +80,7 @@ export function CommentFormatToolbar({ value, onChange, textareaRef }: CommentFo
       window.removeEventListener('scroll', syncPickerPosition, true)
       window.removeEventListener('resize', syncPickerPosition)
     }
-  }, [emojiOpen])
+  }, [emojiOpen, emojiCategory])
 
   useEffect(() => {
     if (!emojiOpen) return
@@ -133,29 +114,21 @@ export function CommentFormatToolbar({ value, onChange, textareaRef }: CommentFo
       ? createPortal(
           <div
             ref={emojiPanelRef}
-            role="listbox"
-            aria-label={t('fortressPage.formatEmoji')}
-            className="fixed z-[200] grid w-[11.75rem] grid-cols-5 gap-1.5 rounded-xl border border-stone-200 bg-white p-2.5 shadow-lg shadow-stone-900/20"
+            className="fixed z-[200]"
             style={{
               top: resolvedPickerPos.top,
               left: resolvedPickerPos.left,
               transform: resolvedPickerPos.transform,
             }}
           >
-            {COMMENT_EMOJIS.map((emoji) => (
-              <button
-                key={emoji}
-                type="button"
-                role="option"
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-xl leading-none hover:bg-stone-100"
-                onClick={() => {
-                  apply((v, s) => insertText(v, s, emoji))
-                  setEmojiOpen(false)
-                }}
-              >
-                {emoji}
-              </button>
-            ))}
+            <CommentEmojiPicker
+              activeCategory={emojiCategory}
+              onCategoryChange={setEmojiCategory}
+              onPick={(emoji) => {
+                apply((v, s) => insertText(v, s, emoji))
+                setEmojiOpen(false)
+              }}
+            />
           </div>,
           document.body,
         )
@@ -211,7 +184,12 @@ export function CommentFormatToolbar({ value, onChange, textareaRef }: CommentFo
           title={t('fortressPage.formatEmoji')}
           aria-label={t('fortressPage.formatEmoji')}
           aria-expanded={emojiOpen}
-          onClick={() => setEmojiOpen((open) => !open)}
+          onClick={() => {
+            setEmojiOpen((open) => {
+              if (!open) setEmojiCategory('smileys')
+              return !open
+            })
+          }}
         >
           <span aria-hidden className="text-lg leading-none">
             😀

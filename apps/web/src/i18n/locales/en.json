@@ -54,7 +54,17 @@
     "formatItalic": "Italic",
     "formatUnderline": "Underline",
     "formatQuote": "Quote",
-    "formatEmoji": "Emoji"
+    "formatEmoji": "Emoji",
+    "emojiCat": {
+      "smileys": "Smileys",
+      "gestures": "Gestures",
+      "hearts": "Hearts",
+      "nature": "Nature",
+      "travel": "Travel",
+      "food": "Food & drink",
+      "objects": "Objects",
+      "flags": "Flags"
+    }
   },
   "fortressesCount_one": "{{count}} fortress",
   "fortressesCount_other": "{{count}} fortresses",

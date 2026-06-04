@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { emojiToTwemojiSrc, splitTextWithFlagEmojis } from './twemoji'
 
 type InlineMark = 'bold' | 'italic' | 'underline'
 
@@ -31,6 +32,26 @@ function wrapInline(mark: InlineMark, children: ReactNode, key: string): ReactNo
   }
 }
 
+function renderPlainText(text: string, keyPrefix: string): ReactNode[] {
+  const nodes: ReactNode[] = []
+  splitTextWithFlagEmojis(text).forEach((part, index) => {
+    if (part.type === 'text') {
+      if (part.value) nodes.push(part.value)
+      return
+    }
+    nodes.push(
+      <img
+        key={`${keyPrefix}-flag-${index}`}
+        src={emojiToTwemojiSrc(part.value)}
+        alt={part.value}
+        className="comment-flag-emoji"
+        draggable={false}
+      />,
+    )
+  })
+  return nodes
+}
+
 function parseInline(text: string, keyPrefix: string): ReactNode[] {
   if (!text) return []
 
@@ -45,13 +66,13 @@ function parseInline(text: string, keyPrefix: string): ReactNode[] {
     }
   }
 
-  if (!marker) return [text]
+  if (!marker) return renderPlainText(text, keyPrefix)
 
   const before = text.slice(0, earliest)
   const rest = text.slice(earliest + marker.open.length)
   const closeIdx = rest.indexOf(marker.close)
 
-  if (closeIdx < 0) return [text]
+  if (closeIdx < 0) return renderPlainText(text, keyPrefix)
 
   const inner = rest.slice(0, closeIdx)
   const after = rest.slice(closeIdx + marker.close.length)

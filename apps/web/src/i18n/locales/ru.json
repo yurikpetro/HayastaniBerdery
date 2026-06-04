@@ -56,7 +56,17 @@
     "formatItalic": "Курсив",
     "formatUnderline": "Подчёркнутый",
     "formatQuote": "Цитата",
-    "formatEmoji": "Эмодзи"
+    "formatEmoji": "Эмодзи",
+    "emojiCat": {
+      "smileys": "Смайлы",
+      "gestures": "Жесты",
+      "hearts": "Сердца",
+      "nature": "Природа",
+      "travel": "Путешествия",
+      "food": "Еда и напитки",
+      "objects": "Предметы",
+      "flags": "Флаги"
+    }
   },
   "fortressesCount_one": "{{count}} крепость",
   "fortressesCount_few": "{{count}} крепости",
