@@ -1,4 +1,5 @@
 import type { Fortress } from '@hayastani/shared'
+import { additionalFortressEntries } from './fortress-entries-additional'
 import { mkFortress } from './fortress-seed-helper'
 
 const marz = (hy: string, ru: string, en: string) => ({ hy, ru, en })
@@ -923,4 +924,6 @@ export const fortressEntries: Fortress[] = [
       },
     ],
   }),
+
+  ...additionalFortressEntries,
 ]
