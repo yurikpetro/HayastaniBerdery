@@ -2530,12 +2530,12 @@ export const additionalFortressEntries: Fortress[] = [
 
   mkFortress({
     slug: 'kohna-gala-nakhchivan',
-    name: { hy: 'Հին Նախիջևանի բերդ', ru: 'Кёхна-Гала / Нахичеванская крепость', en: 'Kohna Gala / Nakhchivan Fortress' },
+    name: { hy: 'Հին Նախիջևանի բերդ', ru: 'Кёхна-Гала / Нахиджеванская крепость', en: 'Kohna Gala / Nakhidjevan Fortress' },
     alternativeNames: ['Köhnəqala', 'Nakhchivangala', 'Yazdegerd Castle', 'Yezidabad Fortress'],
     scope: 'historical-armenia',
     lat: 39.1971,
     lng: 45.4124,
-    marz: marz('Նախիջևան', 'Нахиджеван', 'Nakhchivan'),
+    marz: marz('Նախիջևան', 'Нахиджеван', 'Nakhidjevan'),
     nearestSettlement: marz('Նախիջևան', 'Нахиджеван', 'Nakhchivan'),
     summary: {
       hy: 'Նախիջևան քաղաքի հարավարևելյան մասի հին բերդը՝ հայտնի որպես Քյոհնա-Գալա կամ Նախիջևանղալա։',
@@ -2559,19 +2559,19 @@ export const additionalFortressEntries: Fortress[] = [
     ),
     evidenceLevel: 'partially-verified',
     photoUrl: photo.noPhoto,
-    photoCaption: marz('Հին Նախիջևանի բերդ', 'Кёхна-Гала / Нахичеванская крепость', 'Kohna Gala / Nakhchivan Fortress'),
+    photoCaption: marz('Հին Նախիջևանի բերդ', 'Кёхна-Гала / Нахиджеванская крепость', 'Kohna Gala / Nakhidjevan Fortress'),
     sources: [
       {
         id: 'kohna-gala-wiki',
         type: 'website',
-        title: 'Yazdegerd Castle, Nakhchivan — Wikipedia',
+        title: 'Yazdegerd Castle, Nakhidjevan — Wikipedia',
         url: 'https://en.wikipedia.org/wiki/Yazdegerd_Castle,_Nakhchivan',
         language: 'en',
       },
       {
         id: 'kohna-gala-eurasia',
         type: 'website',
-        title: 'Nakhichevan fortress — Eurasia Travel',
+        title: 'Nakhidjevan fortress — Eurasia Travel',
         url: 'https://eurasia.travel/azerbaijan/nakhichevan/fortress/',
         language: 'en',
       },

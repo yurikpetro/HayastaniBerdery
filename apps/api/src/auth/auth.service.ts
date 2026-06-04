@@ -35,7 +35,12 @@ export class AuthService {
     const valid = await bcrypt.compare(dto.password, user.passwordHash)
     if (!valid) throw new UnauthorizedException('Invalid credentials')
 
-    return this.issueTokens(user)
+    const updated = await this.prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    })
+
+    return this.issueTokens(updated)
   }
 
   async refresh(refreshToken: string): Promise<AuthTokens & { user: AuthUser }> {

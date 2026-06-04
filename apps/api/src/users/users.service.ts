@@ -5,15 +5,21 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
+import type { FortressTranslation } from '@prisma/client'
 import type {
   AdminUser,
+  AdminUserAction,
+  AdminUserComment,
+  AdminUserSubmission,
   BanUserDto,
+  Fortress,
   PaginatedResult,
   UpdateUserRoleDto,
   UserListQuery,
   UserRole,
 } from '@hayastani/shared'
 import { canManageRole } from '../auth/roles.guard'
+import { toLocalized } from '../mappers'
 import { PrismaService } from '../prisma/prisma.service'
 
 type Actor = { id: string; email: string; role: UserRole }
@@ -67,6 +73,20 @@ export class UsersService {
       where: { id },
       include: {
         bannedBy: { select: { id: true, email: true, name: true } },
+        comments: {
+          orderBy: { createdAt: 'desc' },
+          take: 50,
+          include: { fortress: { select: { slug: true, translations: true } } },
+        },
+        submissions: {
+          orderBy: { createdAt: 'desc' },
+          take: 50,
+        },
+        auditLogs: {
+          orderBy: { createdAt: 'desc' },
+          take: 50,
+          include: { fortress: { select: { slug: true, translations: true } } },
+        },
         _count: { select: { comments: true, submissions: true, auditLogs: true } },
       },
     })
@@ -215,7 +235,31 @@ export class UsersService {
     bannedBy?: { id: string; email: string; name: string } | null
     createdAt: Date
     updatedAt: Date
+    lastLoginAt?: Date | null
     _count?: { comments: number; submissions: number; auditLogs: number }
+    comments?: Array<{
+      id: string
+      fortressId: string
+      parentId: string | null
+      body: string
+      status: string
+      createdAt: Date
+      fortress: { slug: string; translations: FortressTranslation[] }
+    }>
+    submissions?: Array<{
+      id: string
+      status: string
+      payload: unknown
+      createdAt: Date
+      moderatorNote: string | null
+    }>
+    auditLogs?: Array<{
+      id: string
+      action: string
+      details: unknown
+      createdAt: Date
+      fortress?: { slug: string; translations: FortressTranslation[] } | null
+    }>
   }): AdminUser {
     return {
       id: record.id,
@@ -226,11 +270,42 @@ export class UsersService {
       bannedAt: record.bannedAt?.toISOString(),
       bannedReason: record.bannedReason ?? undefined,
       bannedBy: record.bannedBy ?? null,
+      lastLoginAt: record.lastLoginAt?.toISOString(),
       createdAt: record.createdAt.toISOString(),
       updatedAt: record.updatedAt.toISOString(),
       commentsCount: record._count?.comments,
       submissionsCount: record._count?.submissions,
       auditLogsCount: record._count?.auditLogs,
+      comments: record.comments?.map((comment): AdminUserComment => ({
+        id: comment.id,
+        fortressId: comment.fortressId,
+        fortressSlug: comment.fortress.slug,
+        fortressName: toLocalized(comment.fortress.translations, 'name'),
+        parentId: comment.parentId,
+        body: comment.body,
+        status: comment.status as AdminUserComment['status'],
+        createdAt: comment.createdAt.toISOString(),
+      })),
+      submissions: record.submissions?.map((submission): AdminUserSubmission => {
+        const proposed = submission.payload as unknown as Fortress
+        return {
+          id: submission.id,
+          status: submission.status.replace(/_/g, '-') as AdminUserSubmission['status'],
+          proposedFortressName: proposed.name,
+          proposedFortressSummary: proposed.summary,
+          proposedFortressSlug: proposed.slug,
+          createdAt: submission.createdAt.toISOString(),
+          moderatorNote: submission.moderatorNote ?? undefined,
+        }
+      }),
+      adminActions: record.auditLogs?.map((entry): AdminUserAction => ({
+        id: entry.id,
+        action: entry.action,
+        fortressSlug: entry.fortress?.slug ?? null,
+        fortressName: entry.fortress ? toLocalized(entry.fortress.translations, 'name') : null,
+        details: entry.details,
+        createdAt: entry.createdAt.toISOString(),
+      })),
     }
   }
 }

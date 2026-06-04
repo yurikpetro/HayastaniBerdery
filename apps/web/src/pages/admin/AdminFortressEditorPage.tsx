@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import type { Fortress } from '@hayastani/shared'
@@ -15,17 +15,30 @@ export function AdminFortressEditorPage({ mode }: { mode: 'create' | 'edit' }) {
   const isCreate = mode === 'create'
   const emptyFortress = useMemo(() => createEmptyFortress(), [])
   const { data, isLoading } = useFortress(isCreate ? '' : slug)
+  const [saveMessage, setSaveMessage] = useState<
+    { type: 'success' | 'error'; message: string } | null
+  >(null)
 
   const save = useMutation({
     mutationFn: (fortress: Fortress) =>
       isCreate ? api.fortresses.create(fortress) : api.fortresses.update(fortress.id, fortress),
+    onMutate: () => {
+      setSaveMessage(null)
+    },
     onSuccess: (saved) => {
       void queryClient.invalidateQueries({ queryKey: ['fortresses'] })
       void queryClient.invalidateQueries({ queryKey: ['fortress', saved.slug] })
       if (!isCreate && slug && slug !== saved.slug) {
         void queryClient.invalidateQueries({ queryKey: ['fortress', slug] })
       }
+      setSaveMessage({ type: 'success', message: t('adminForm.saveSucceeded') })
       navigate(`/admin/fortresses/${saved.slug}/edit`)
+    },
+    onError: (error) => {
+      setSaveMessage({
+        type: 'error',
+        message: error instanceof Error ? error.message : t('adminForm.saveFailed'),
+      })
     },
   })
 
@@ -64,6 +77,11 @@ export function AdminFortressEditorPage({ mode }: { mode: 'create' | 'edit' }) {
         fortress={initialFortress}
         mode={mode}
         isSaving={save.isPending}
+        saveStatus={
+          save.isPending
+            ? { type: 'loading', message: t('adminForm.saving') }
+            : saveMessage ?? undefined
+        }
         onSubmit={(fortress) => save.mutate(fortress)}
       />
     </div>

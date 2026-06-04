@@ -8,7 +8,7 @@ import {
 import { AuthGuard } from '@nestjs/passport'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
-import { extname, join } from 'path'
+import { extname } from 'path'
 import { existsSync, mkdirSync } from 'fs'
 import { Roles, RolesGuard } from '../auth/roles.guard'
 
@@ -33,8 +33,7 @@ export class MediaController {
     }),
   )
   upload(@UploadedFile() file: Express.Multer.File) {
-    const base =
-      process.env.MEDIA_BASE_URL ?? `http://localhost:${process.env.PORT ?? 3000}/uploads`
+    const base = process.env.MEDIA_BASE_URL || '/uploads'
     return {
       url: `${base}/${file.filename}`,
       filename: file.filename,

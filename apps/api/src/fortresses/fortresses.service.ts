@@ -93,8 +93,9 @@ export class FortressesService {
   }
 
   async replace(id: string, payload: Fortress, userId?: string): Promise<Fortress> {
-    const existing = await this.prisma.fortress.findUnique({ where: { id } })
+    const existing = await this.prisma.fortress.findUnique({ where: { id }, include })
     if (!existing) throw new NotFoundException('Fortress not found')
+    const previous = mapFortress(existing)
 
     await this.prisma.$transaction([
       this.prisma.fortressTranslation.deleteMany({ where: { fortressId: id } }),
@@ -107,11 +108,12 @@ export class FortressesService {
       data: this.buildFortressData({ ...payload, id }),
       include,
     })
+    const current = mapFortress(record)
 
     const action =
-      existing.status !== 'archived' && payload.status === 'archived'
+      previous.status !== 'archived' && payload.status === 'archived'
         ? 'fortress.archived'
-        : existing.status === 'archived' && payload.status !== 'archived'
+        : previous.status === 'archived' && payload.status !== 'archived'
           ? 'fortress.restored'
           : 'fortress.updated'
 
@@ -122,8 +124,11 @@ export class FortressesService {
         action,
         details: {
           slug: record.slug,
-          previousStatus: existing.status,
+          name: current.name,
+          previousStatus: previous.status,
           status: record.status,
+          diffVersion: 2,
+          changedFields: this.getChangedFields(previous, current),
         },
       },
     })
@@ -132,8 +137,9 @@ export class FortressesService {
   }
 
   async remove(id: string, userId?: string): Promise<{ id: string; deleted: true }> {
-    const existing = await this.prisma.fortress.findUnique({ where: { id } })
+    const existing = await this.prisma.fortress.findUnique({ where: { id }, include })
     if (!existing) throw new NotFoundException('Fortress not found')
+    const deleted = mapFortress(existing)
 
     await this.prisma.$transaction([
       this.prisma.auditLog.create({
@@ -141,13 +147,63 @@ export class FortressesService {
           fortressId: id,
           userId,
           action: 'fortress.deleted',
-          details: { slug: existing.slug, status: existing.status },
+          details: {
+            slug: deleted.slug,
+            name: deleted.name,
+            status: deleted.status,
+            changedFields: ['deleted'],
+          },
         },
       }),
       this.prisma.fortress.delete({ where: { id } }),
     ])
 
     return { id, deleted: true }
+  }
+
+  private getChangedFields(previous: Fortress, current: Fortress): string[] {
+    const fields: Array<keyof Fortress | 'coordinates' | 'photos' | 'sources'> = [
+      'slug',
+      'name',
+      'alternativeNames',
+      'scope',
+      'coordinates',
+      'coordinateAccuracy',
+      'marz',
+      'nearestSettlement',
+      'summary',
+      'history',
+      'foundation',
+      'period',
+      'condition',
+      'type',
+      'accessibility',
+      'routeHint',
+      'altitudeMeters',
+      'evidenceLevel',
+      'features',
+      'warnings',
+      'relatedPlaces',
+      'photos',
+      'sources',
+      'status',
+    ]
+
+    return fields.filter(
+      (field) =>
+        JSON.stringify(this.comparableField(previous, field)) !==
+        JSON.stringify(this.comparableField(current, field)),
+    )
+  }
+
+  private comparableField(fortress: Fortress, field: keyof Fortress | 'coordinates' | 'photos' | 'sources') {
+    if (field === 'photos') {
+      return fortress.photos.map(({ id: _id, ...photo }) => photo)
+    }
+    if (field === 'sources') {
+      return fortress.sources.map(({ id: _id, ...source }) => source)
+    }
+    return fortress[field]
   }
 
   private buildFortressData(payload: Fortress): Prisma.FortressCreateInput {

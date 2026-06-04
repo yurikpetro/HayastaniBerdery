@@ -30,7 +30,7 @@ export function AdminSubmissionsPage() {
     <div className="space-y-4">
       <h3 className="text-2xl font-bold">{t('admin.submissions')}</h3>
       {data.map((submission) => (
-        <article key={submission.id} className="rounded-xl border border-stone-200 p-4">
+        <article id={`submission-${submission.id}`} key={submission.id} className="rounded-xl border border-stone-200 p-4">
           <div className="flex flex-wrap justify-between gap-2">
             <div>
               <h4 className="font-bold">{submission.proposedFortress.name.ru}</h4>

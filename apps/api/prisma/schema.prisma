@@ -110,6 +110,7 @@ model User {
   bannedAt     DateTime?
   bannedReason String?
   bannedById   String?
+  lastLoginAt  DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 

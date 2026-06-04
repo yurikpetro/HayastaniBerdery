@@ -62,6 +62,109 @@ const emptyLocalizedText = (): LocalizedText => ({ hy: '', ru: '', en: '' })
 const makeId = (prefix: string) =>
   `${prefix}-${typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : Date.now()}`
 
+const comparableFortress = (fortress: Fortress) => {
+  const { updatedAt: _updatedAt, ...rest } = fortress
+  return rest
+}
+
+const trackedFields: Array<keyof Fortress | 'coordinates' | 'photos' | 'sources'> = [
+  'slug',
+  'name',
+  'alternativeNames',
+  'scope',
+  'coordinates',
+  'coordinateAccuracy',
+  'marz',
+  'nearestSettlement',
+  'summary',
+  'history',
+  'foundation',
+  'period',
+  'condition',
+  'type',
+  'accessibility',
+  'routeHint',
+  'altitudeMeters',
+  'evidenceLevel',
+  'features',
+  'warnings',
+  'relatedPlaces',
+  'photos',
+  'sources',
+  'status',
+]
+
+const comparableField = (fortress: Fortress, field: keyof Fortress | 'coordinates' | 'photos' | 'sources') => {
+  if (field === 'photos') return fortress.photos.map(({ id: _id, ...photo }) => photo)
+  if (field === 'sources') return fortress.sources.map(({ id: _id, ...source }) => source)
+  return fortress[field]
+}
+
+const countCollectionChanges = <T extends { id: string }>(
+  previous: T[],
+  current: T[],
+  normalize: (item: T) => unknown,
+) => {
+  const previousMap = new Map(previous.map((item) => [item.id, normalize(item)]))
+  const currentMap = new Map(current.map((item) => [item.id, normalize(item)]))
+  let added = 0
+  let removed = 0
+  let changed = 0
+
+  for (const [id, value] of currentMap) {
+    if (!previousMap.has(id)) added += 1
+    else if (JSON.stringify(previousMap.get(id)) !== JSON.stringify(value)) changed += 1
+  }
+  for (const id of previousMap.keys()) {
+    if (!currentMap.has(id)) removed += 1
+  }
+
+  return { added, removed, changed }
+}
+
+const normalizePhoto = ({ id: _id, ...photo }: PhotoAsset) => photo
+const normalizeSource = ({ id: _id, ...source }: SourceLink) => source
+
+const localizedFields: LocalizedField[] = [
+  'name',
+  'marz',
+  'nearestSettlement',
+  'summary',
+  'history',
+  'routeHint',
+]
+const localizedListFields: LocalizedListField[] = ['features', 'warnings', 'relatedPlaces']
+
+function changedLocales(previous: LocalizedText, current: LocalizedText) {
+  return locales.filter((locale) => previous[locale] !== current[locale])
+}
+
+function changedListLocales(previous: LocalizedText[], current: LocalizedText[]) {
+  return locales.filter((locale) => {
+    const previousValues = previous.map((item) => item[locale])
+    const currentValues = current.map((item) => item[locale])
+    return JSON.stringify(previousValues) !== JSON.stringify(currentValues)
+  })
+}
+
+function withLocales(label: string, changed: Locale[]) {
+  return changed.length ? `${label} (${changed.join(', ')})` : label
+}
+
+function formatCollectionChange(
+  t: ReturnType<typeof useTranslation>['t'],
+  field: 'photos' | 'sources',
+  changes: { added: number; removed: number; changed: number },
+) {
+  const parts = [
+    changes.added ? t('adminForm.changeAdded', { count: changes.added }) : '',
+    changes.removed ? t('adminForm.changeRemoved', { count: changes.removed }) : '',
+    changes.changed ? t('adminForm.changeUpdated', { count: changes.changed }) : '',
+  ].filter(Boolean)
+  const label = t(`adminFortressFields.${field}`, field)
+  return parts.length ? `${label}: ${parts.join(', ')}` : label
+}
+
 export const createEmptyFortress = (): Fortress => ({
   id: makeId('fortress'),
   slug: '',
@@ -94,16 +197,60 @@ interface FortressFormProps {
   fortress: Fortress
   mode: 'create' | 'edit'
   isSaving?: boolean
+  saveStatus?: { type: 'success' | 'error' | 'loading'; message: string }
   onSubmit: (fortress: Fortress) => void
 }
 
-export function FortressForm({ fortress, mode, isSaving = false, onSubmit }: FortressFormProps) {
+export function FortressForm({
+  fortress,
+  mode,
+  isSaving = false,
+  saveStatus,
+  onSubmit,
+}: FortressFormProps) {
   const { t } = useTranslation()
   const [draft, setDraft] = useState<Fortress>(fortress)
   const [uploadingPhotoId, setUploadingPhotoId] = useState<string | null>(null)
+  const hasChanges =
+    mode === 'create' ||
+    JSON.stringify(comparableFortress(draft)) !== JSON.stringify(comparableFortress(fortress))
 
   const tr = (key: string) => t(`adminForm.${key}`)
   const optionLabel = (value: string) => t(`adminOptions.${value}`, value)
+  const changedFields = trackedFields.filter(
+    (field) =>
+      JSON.stringify(comparableField(fortress, field)) !==
+      JSON.stringify(comparableField(draft, field)),
+  )
+  const photoChanges = countCollectionChanges(fortress.photos, draft.photos, normalizePhoto)
+  const sourceChanges = countCollectionChanges(fortress.sources, draft.sources, normalizeSource)
+  const changeSummary = changedFields
+    .map((field) => {
+      if (field === 'photos') return formatCollectionChange(t, 'photos', photoChanges)
+      if (field === 'sources') return formatCollectionChange(t, 'sources', sourceChanges)
+      const label = t(`adminFortressFields.${field}`, field)
+      if (localizedFields.includes(field as LocalizedField)) {
+        return withLocales(
+          label,
+          changedLocales(
+            fortress[field as LocalizedField],
+            draft[field as LocalizedField],
+          ),
+        )
+      }
+      if (localizedListFields.includes(field as LocalizedListField)) {
+        return withLocales(
+          label,
+          changedListLocales(
+            fortress[field as LocalizedListField],
+            draft[field as LocalizedListField],
+          ),
+        )
+      }
+      return label
+    })
+    .filter(Boolean)
+    .join(', ')
 
   const setLocalizedField = (field: LocalizedField, locale: Locale, value: string) => {
     setDraft((current) => ({
@@ -233,6 +380,7 @@ export function FortressForm({ fortress, mode, isSaving = false, onSubmit }: For
       className="space-y-6"
       onSubmit={(event) => {
         event.preventDefault()
+        if (!hasChanges || isSaving) return
         submit()
       }}
     >
@@ -670,10 +818,33 @@ export function FortressForm({ fortress, mode, isSaving = false, onSubmit }: For
         </div>
       </section>
 
-      <div className="sticky bottom-4 flex justify-end rounded-2xl border border-stone-200 bg-white/95 p-4 shadow-lg">
+      <div className="sticky bottom-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white/95 p-4 shadow-lg">
+        <div aria-live="polite">
+          {saveStatus ? (
+            <p
+              className={`rounded-xl px-3 py-2 text-sm ${
+                saveStatus.type === 'success'
+                  ? 'bg-emerald-50 text-emerald-800'
+                  : saveStatus.type === 'error'
+                    ? 'bg-red-50 text-red-700'
+                    : 'bg-stone-100 text-stone-700'
+              }`}
+            >
+              {saveStatus.message}
+            </p>
+          ) : hasChanges ? (
+            <p className="rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-800">
+              {t('adminForm.pendingChanges', { changes: changeSummary })}
+            </p>
+          ) : (
+            <p className="rounded-xl bg-stone-100 px-3 py-2 text-sm text-stone-600">
+              {tr('noChanges')}
+            </p>
+          )}
+        </div>
         <button
           type="submit"
-          disabled={isSaving}
+          disabled={isSaving || !hasChanges}
           className="rounded-full bg-forest px-6 py-2.5 font-medium text-white disabled:opacity-60"
         >
           {isSaving ? tr('saving') : mode === 'create' ? tr('create') : tr('save')}

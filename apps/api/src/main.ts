@@ -2,13 +2,14 @@ import 'reflect-metadata'
 import { NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
 import { NestExpressApplication } from '@nestjs/platform-express'
-import { join } from 'path'
+import { isAbsolute, resolve } from 'path'
 import { existsSync, mkdirSync } from 'fs'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
   const uploadDir = process.env.UPLOAD_DIR ?? './uploads'
   if (!existsSync(uploadDir)) mkdirSync(uploadDir, { recursive: true })
+  const uploadPath = isAbsolute(uploadDir) ? uploadDir : resolve(process.cwd(), uploadDir)
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
   app.setGlobalPrefix('api')
@@ -17,7 +18,7 @@ async function bootstrap() {
     origin: process.env.CORS_ORIGIN?.split(',') ?? ['http://localhost:5173'],
     credentials: true,
   })
-  app.useStaticAssets(join(process.cwd(), uploadDir), { prefix: '/uploads/' })
+  app.useStaticAssets(uploadPath, { prefix: '/uploads/' })
 
   const port = Number(process.env.PORT ?? 3000)
   await app.listen(port)

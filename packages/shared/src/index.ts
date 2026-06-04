@@ -166,11 +166,45 @@ export interface AdminUser {
   bannedAt?: string
   bannedReason?: string
   bannedBy?: Pick<AuthUser, 'id' | 'email' | 'name'> | null
+  lastLoginAt?: string
   createdAt: string
   updatedAt: string
   commentsCount?: number
   submissionsCount?: number
   auditLogsCount?: number
+  comments?: AdminUserComment[]
+  submissions?: AdminUserSubmission[]
+  adminActions?: AdminUserAction[]
+}
+
+export interface AdminUserComment {
+  id: string
+  fortressId: string
+  fortressSlug: string
+  fortressName: LocalizedText
+  parentId?: string | null
+  body: string
+  status: CommentStatus
+  createdAt: string
+}
+
+export interface AdminUserSubmission {
+  id: string
+  status: SubmissionStatus
+  proposedFortressName: LocalizedText
+  proposedFortressSummary: LocalizedText
+  proposedFortressSlug: string
+  createdAt: string
+  moderatorNote?: string
+}
+
+export interface AdminUserAction {
+  id: string
+  action: string
+  fortressSlug?: string | null
+  fortressName?: LocalizedText | null
+  details?: unknown
+  createdAt: string
 }
 
 export interface UserListQuery {

@@ -151,7 +151,7 @@ export function FortressComments({ fortressId }: FortressCommentsProps) {
 
     return (
       <div key={node.id} className="space-y-3" style={{ marginLeft: depth > 0 ? indent : 0 }}>
-        <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
+        <div id={`comment-${node.id}`} className="rounded-xl border border-stone-200 bg-stone-50 p-4">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <strong className="text-stone-900">{node.author}</strong>
             <time className="text-xs text-stone-500" dateTime={node.createdAt}>
