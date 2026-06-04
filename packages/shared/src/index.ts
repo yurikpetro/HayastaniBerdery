@@ -97,6 +97,7 @@ export interface SourceLink {
 export interface FortressComment {
   id: string
   fortressId: string
+  parentId?: string | null
   author: string
   body: string
   status: CommentStatus
@@ -165,8 +166,11 @@ export interface RegisterDto {
   name: string
 }
 
+export { MAX_COMMENT_BODY_LENGTH, sanitizeCommentBody } from './commentBody'
+
 export interface CreateCommentDto {
   body: string
+  parentId?: string
 }
 
 export interface CreateSubmissionDto {

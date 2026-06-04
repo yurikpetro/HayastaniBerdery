@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { AttributionControl, MapContainer, useMap } from 'react-leaflet'
 import { ArtsakhHyLabelsLayer } from './ArtsakhHyLabelsLayer'
 import { MapBaseLayers } from './MapBaseLayers'
@@ -63,6 +64,8 @@ function ClusterLayer({
   markerMode: MapMarkerMode
 }) {
   const map = useMap()
+  const { t } = useTranslation()
+  const detailsLabel = t('details')
   const onSelectRef = useRef(onSelect)
   onSelectRef.current = onSelect
   const markersBySlugRef = useRef<Map<string, L.Marker>>(new Map())
@@ -89,7 +92,11 @@ function ClusterLayer({
         } as L.MarkerOptions & { coverUrl?: string | null },
       )
 
-      marker.bindPopup(buildFortressPopupHtml(fortress, locale, localized))
+      marker.bindPopup(buildFortressPopupHtml(fortress, locale, localized, detailsLabel))
+      marker.on('popupopen', () => {
+        const link = marker.getPopup()?.getElement()?.querySelector('.fortress-map-popup')
+        if (link) L.DomEvent.disableClickPropagation(link as HTMLElement)
+      })
       marker.on('click', () => onSelectRef.current(fortress.slug))
       cluster.addLayer(marker)
       markersBySlug.set(fortress.slug, marker)
@@ -101,7 +108,7 @@ function ClusterLayer({
       map.removeLayer(cluster)
       markersBySlugRef.current.clear()
     }
-  }, [fortresses, locale, map, markerMode])
+  }, [detailsLabel, fortresses, locale, map, markerMode])
 
   useEffect(() => {
     if (markerMode !== 'photos') return

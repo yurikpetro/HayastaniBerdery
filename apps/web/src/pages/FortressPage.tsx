@@ -1,13 +1,11 @@
-import { useState } from 'react'
+import { type ReactNode } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { Locale } from '@hayastani/shared'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import L from 'leaflet'
-import { api } from '../api/client'
-import { useAuth } from '../auth/AuthContext'
+import { FortressComments } from '../components/fortress/FortressComments'
 import { useFortress } from '../hooks/useFortresses'
 import {
   accessibilityLabels,
@@ -18,6 +16,7 @@ import {
   periodLabels,
   primaryPhoto,
   scopeLabels,
+  typeLabels,
 } from '../lib/labels'
 
 const icon = new L.Icon({
@@ -28,34 +27,89 @@ const icon = new L.Icon({
   iconAnchor: [12, 41],
 })
 
+function ContentPanel({
+  children,
+  className = '',
+}: {
+  children: ReactNode
+  className?: string
+}) {
+  return (
+    <div
+      className={`rounded-2xl border border-white/70 bg-white/92 p-5 shadow-lg shadow-stone-900/10 backdrop-blur-md sm:p-6 ${className}`}
+    >
+      {children}
+    </div>
+  )
+}
+
 export function FortressPage() {
   const { slug = '' } = useParams()
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
-  const { user } = useAuth()
-  const queryClient = useQueryClient()
   const { data: fortress, isLoading } = useFortress(slug)
-  const [comment, setComment] = useState('')
 
-  const commentsQuery = useQuery({
-    queryKey: ['comments', fortress?.id],
-    queryFn: () => api.comments.list(fortress!.id),
-    enabled: Boolean(fortress?.id),
-  })
+  if (isLoading) {
+    return (
+      <div className="fortress-page">
+        <ContentPanel>
+          <p className="text-stone-600">{t('loading')}</p>
+        </ContentPanel>
+      </div>
+    )
+  }
 
-  const addComment = useMutation({
-    mutationFn: () => api.comments.create(fortress!.id, { body: comment }),
-    onSuccess: () => {
-      setComment('')
-      void queryClient.invalidateQueries({ queryKey: ['comments', fortress?.id] })
-    },
-  })
-
-  if (isLoading) return <p>{t('loading')}</p>
-  if (!fortress) return <p>{t('empty')}</p>
+  if (!fortress) {
+    return (
+      <div className="fortress-page">
+        <ContentPanel>
+          <p className="text-stone-700">{t('empty')}</p>
+          <Link to="/catalog" className="mt-4 inline-block text-terracotta hover:underline">
+            ← {t('nav.catalog')}
+          </Link>
+        </ContentPanel>
+      </div>
+    )
+  }
 
   const hero = primaryPhoto(fortress)
   const title = localized(fortress.name, locale)
+  const features = fortress.features.map((item) => localized(item, locale)).filter(Boolean)
+  const warnings = fortress.warnings.map((item) => localized(item, locale)).filter(Boolean)
+  const relatedPlaces = fortress.relatedPlaces
+    .map((item) => localized(item, locale))
+    .filter(Boolean)
+
+  const metaItems = [
+    { label: t('fortressPage.marz'), value: localized(fortress.marz, locale) },
+    {
+      label: t('fortressPage.nearestSettlement'),
+      value: localized(fortress.nearestSettlement, locale),
+    },
+    { label: t('fortressPage.period'), value: localized(periodLabels[fortress.period], locale) },
+    { label: t('fortressPage.type'), value: localized(typeLabels[fortress.type], locale) },
+    {
+      label: t('fortressPage.condition'),
+      value: localized(conditionLabels[fortress.condition], locale),
+    },
+    {
+      label: t('fortressPage.accessibility'),
+      value: localized(accessibilityLabels[fortress.accessibility], locale),
+    },
+    { label: t('fortressPage.founded'), value: fortress.foundation },
+    {
+      label: t('fortressPage.coordinates'),
+      value: `${fortress.coordinates.lat.toFixed(4)}, ${fortress.coordinates.lng.toFixed(4)}`,
+    },
+    ...(fortress.altitudeMeters != null
+      ? [
+          {
+            label: t('fortressPage.altitude'),
+            value: `${fortress.altitudeMeters} ${t('fortressPage.meters')}`,
+          },
+        ]
+      : []),
+  ]
 
   return (
     <>
@@ -65,144 +119,211 @@ export function FortressPage() {
         {hero ? <meta property="og:image" content={hero.url} /> : null}
       </Helmet>
 
-      <article className="space-y-8">
-        <Link to={`/?fortress=${fortress.slug}`} className="text-sm text-terracotta hover:underline">
-          ← {t('nav.map')}
-        </Link>
+      <article className="fortress-page space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Link
+            to={`/?fortress=${fortress.slug}`}
+            className="inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/90 px-4 py-2 text-sm font-medium text-stone-800 shadow-sm transition hover:bg-white"
+          >
+            ← {t('nav.map')}
+          </Link>
+          <Link
+            to="/catalog"
+            className="text-sm font-medium text-white/90 underline-offset-2 hover:text-white hover:underline"
+          >
+            {t('nav.catalog')}
+          </Link>
+        </div>
 
-        {hero ? (
-          <img src={hero.url} alt={title} className="h-[420px] w-full rounded-3xl object-cover" />
-        ) : null}
+        <section className="overflow-hidden rounded-3xl border border-white/60 bg-white/92 shadow-xl shadow-stone-900/15 backdrop-blur-md">
+          {hero ? (
+            <div className="relative h-[min(420px,50vh)] w-full">
+              <img src={hero.url} alt={title} className="h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-900/85 via-stone-900/25 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta/90">
+                  {localized(scopeLabels[fortress.scope], locale)}
+                </p>
+                <h1 className="mt-1 font-display text-3xl font-bold text-white sm:text-4xl md:text-5xl">
+                  {title}
+                </h1>
+                {fortress.alternativeNames.length > 0 ? (
+                  <p className="mt-2 text-sm text-white/85">
+                    {fortress.alternativeNames.join(' · ')}
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          ) : (
+            <div className="border-b border-stone-200/80 bg-gradient-to-br from-stone-100 to-stone-50 p-6 sm:p-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
+                {localized(scopeLabels[fortress.scope], locale)}
+              </p>
+              <h1 className="mt-1 font-display text-3xl font-bold text-stone-900 sm:text-4xl">
+                {title}
+              </h1>
+              {fortress.alternativeNames.length > 0 ? (
+                <p className="mt-2 text-sm text-stone-600">
+                  {fortress.alternativeNames.join(' · ')}
+                </p>
+              ) : null}
+            </div>
+          )}
 
-        <header className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="text-sm uppercase tracking-widest text-terracotta">
-              {localized(scopeLabels[fortress.scope], locale)}
-            </p>
-            <h1 className="text-4xl font-bold md:text-5xl">{title}</h1>
-            <p className="mt-2 text-stone-600">{fortress.alternativeNames.join(' · ')}</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="rounded-full bg-forest/10 px-3 py-1 text-sm text-forest">
-              {localized(evidenceLabels[fortress.evidenceLevel], locale)}
+          <div className="flex flex-wrap gap-2 border-b border-stone-200/80 px-5 py-4 sm:px-6">
+            <span className="rounded-full bg-forest/12 px-3 py-1 text-sm font-medium text-forest">
+              {t('fortressPage.evidence')}: {localized(evidenceLabels[fortress.evidenceLevel], locale)}
             </span>
-            <span className="rounded-full bg-stone-200 px-3 py-1 text-sm">
+            <span className="rounded-full bg-stone-200/90 px-3 py-1 text-sm font-medium text-stone-800">
+              {t('fortressPage.coordAccuracy')}:{' '}
               {localized(accuracyLabels[fortress.coordinateAccuracy], locale)}
             </span>
           </div>
-        </header>
 
-        <p className="max-w-3xl text-lg text-stone-700">{localized(fortress.summary, locale)}</p>
+          <p className="px-5 py-5 text-lg leading-relaxed text-stone-800 sm:px-6">
+            {localized(fortress.summary, locale)}
+          </p>
+        </section>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            [t('filters'), localized(fortress.marz, locale)],
-            ['Period', localized(periodLabels[fortress.period], locale)],
-            [t('warnings'), localized(conditionLabels[fortress.condition], locale)],
-            ['Access', localized(accessibilityLabels[fortress.accessibility], locale)],
-            [
-              'Coords',
-              `${fortress.coordinates.lat.toFixed(4)}, ${fortress.coordinates.lng.toFixed(4)}`,
-            ],
-            ['Founded', fortress.foundation],
-          ].map(([label, value]) => (
-            <div key={label} className="rounded-2xl border border-stone-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-wide text-stone-500">{label}</p>
-              <p className="mt-1 font-semibold">{value}</p>
-            </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {metaItems.map(({ label, value }) => (
+            <ContentPanel key={label} className="!p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+                {label}
+              </p>
+              <p className="mt-1 font-semibold leading-snug text-stone-900">{value}</p>
+            </ContentPanel>
           ))}
         </div>
 
         <section className="grid gap-6 lg:grid-cols-2">
-          <div className="space-y-4 rounded-2xl border border-stone-200 bg-white p-6">
-            <h2 className="text-2xl font-bold">{t('history')}</h2>
-            <p className="text-stone-700">{localized(fortress.history, locale)}</p>
-            <h3 className="font-semibold">{t('route')}</h3>
-            <p className="text-stone-700">{localized(fortress.routeHint, locale)}</p>
-          </div>
-          <div className="overflow-hidden rounded-2xl border border-stone-200">
+          <ContentPanel className="space-y-5">
+            <div>
+              <h2 className="font-display text-2xl font-bold text-stone-900">{t('history')}</h2>
+              <p className="mt-3 leading-relaxed text-stone-700">
+                {localized(fortress.history, locale)}
+              </p>
+            </div>
+            <div>
+              <h3 className="font-display text-lg font-bold text-stone-900">{t('route')}</h3>
+              <p className="mt-2 leading-relaxed text-stone-700">
+                {localized(fortress.routeHint, locale)}
+              </p>
+            </div>
+            {features.length > 0 ? (
+              <div>
+                <h3 className="font-display text-lg font-bold text-stone-900">{t('features')}</h3>
+                <ul className="mt-2 list-inside list-disc space-y-1 text-stone-700">
+                  {features.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {warnings.length > 0 ? (
+              <div className="rounded-xl border border-amber-200/80 bg-amber-50/90 p-4">
+                <h3 className="font-display text-lg font-bold text-amber-950">{t('warnings')}</h3>
+                <ul className="mt-2 list-inside list-disc space-y-1 text-amber-950/90">
+                  {warnings.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {relatedPlaces.length > 0 ? (
+              <div>
+                <h3 className="font-display text-lg font-bold text-stone-900">
+                  {t('fortressPage.relatedPlaces')}
+                </h3>
+                <ul className="mt-2 flex flex-wrap gap-2">
+                  {relatedPlaces.map((place) => (
+                    <li
+                      key={place}
+                      className="rounded-full bg-stone-100 px-3 py-1 text-sm text-stone-800"
+                    >
+                      {place}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </ContentPanel>
+
+          <ContentPanel className="fortress-page__map overflow-hidden !p-0">
+            <p className="border-b border-stone-200/80 px-5 py-3 text-sm font-semibold text-stone-800">
+              {t('fortressPage.location')}
+            </p>
             <MapContainer
               center={[fortress.coordinates.lat, fortress.coordinates.lng]}
               zoom={12}
               className="h-80 w-full"
               scrollWheelZoom={false}
+              attributionControl={false}
             >
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              <Marker
-                position={[fortress.coordinates.lat, fortress.coordinates.lng]}
-                icon={icon}
-              />
+              <Marker position={[fortress.coordinates.lat, fortress.coordinates.lng]} icon={icon} />
             </MapContainer>
-          </div>
+          </ContentPanel>
         </section>
 
         {fortress.photos.length > 1 ? (
-          <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {fortress.photos.map((photo) => (
-              <img
-                key={photo.id}
-                src={photo.url}
-                alt={localized(photo.caption, locale)}
-                className="h-56 w-full rounded-2xl object-cover"
-              />
-            ))}
+          <section className="space-y-4">
+            <h2 className="font-display text-2xl font-bold text-white drop-shadow-sm">
+              {t('fortressPage.gallery')}
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {fortress.photos.map((photo) => (
+                <div
+                  key={photo.id}
+                  className="overflow-hidden rounded-2xl border border-white/60 bg-white/92 shadow-lg shadow-stone-900/10"
+                >
+                  <img
+                    src={photo.url}
+                    alt={localized(photo.caption, locale)}
+                    className="h-56 w-full object-cover"
+                    loading="lazy"
+                  />
+                  {localized(photo.caption, locale) ? (
+                    <p className="px-3 py-2 text-sm text-stone-700">
+                      {localized(photo.caption, locale)}
+                    </p>
+                  ) : null}
+                </div>
+              ))}
+            </div>
           </section>
         ) : null}
 
-        <section className="rounded-2xl border border-stone-200 bg-white p-6">
-          <h2 className="text-2xl font-bold">{t('sources')}</h2>
+        <ContentPanel>
+          <h2 className="font-display text-2xl font-bold text-stone-900">{t('sources')}</h2>
           <ul className="mt-4 space-y-3">
             {fortress.sources.map((source) => (
-              <li key={source.id} className="border-b border-stone-100 pb-3">
-                <strong>{source.title}</strong>
-                {source.author ? <span className="text-stone-600"> — {source.author}</span> : null}
+              <li
+                key={source.id}
+                className="border-b border-stone-100 pb-3 last:border-0 last:pb-0"
+              >
+                <strong className="text-stone-900">{source.title}</strong>
+                {source.author ? (
+                  <span className="text-stone-600"> — {source.author}</span>
+                ) : null}
                 {source.url ? (
-                  <a href={source.url} className="ml-2 text-terracotta" target="_blank" rel="noreferrer">
-                    link
+                  <a
+                    href={source.url}
+                    className="ml-2 font-medium text-terracotta hover:underline"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {t('fortressPage.sourceLink')}
                   </a>
                 ) : null}
               </li>
             ))}
           </ul>
-        </section>
+        </ContentPanel>
 
-        <section className="rounded-2xl border border-stone-200 bg-white p-6">
-          <h2 className="text-2xl font-bold">{t('comments')}</h2>
-          <div className="mt-4 space-y-3">
-            {commentsQuery.data?.map((item) => (
-              <div key={item.id} className="rounded-xl bg-stone-50 p-4">
-                <strong>{item.author}</strong>
-                <p className="mt-1 text-stone-700">{item.body}</p>
-              </div>
-            ))}
-          </div>
-          {user ? (
-            <form
-              className="mt-4 flex flex-col gap-2"
-              onSubmit={(e) => {
-                e.preventDefault()
-                addComment.mutate()
-              }}
-            >
-              <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                className="rounded-xl border border-stone-300 p-3"
-                rows={3}
-              />
-              <button type="submit" className="self-start rounded-full bg-terracotta px-5 py-2 text-white">
-                Post
-              </button>
-            </form>
-          ) : (
-            <p className="mt-4 text-sm text-stone-600">
-              <Link to="/login" className="text-terracotta">
-                {t('nav.login')}
-              </Link>{' '}
-              to comment
-            </p>
-          )}
-        </section>
+        <ContentPanel>
+          <FortressComments fortressId={fortress.id} />
+        </ContentPanel>
       </article>
     </>
   )

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "predev": "npm run build -w @hayastani/shared",
     "dev": "tsx watch src/main.ts",
     "build": "tsc",
     "start": "node dist/main.js",

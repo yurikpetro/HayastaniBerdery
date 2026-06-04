@@ -191,14 +191,19 @@ model FortressSource {
 model FortressComment {
   id         String        @id @default(cuid())
   fortressId String
+  parentId   String?
   userId     String?
   authorName String
   body       String        @db.Text
   status     CommentStatus @default(published)
   createdAt  DateTime      @default(now())
 
-  fortress Fortress @relation(fields: [fortressId], references: [id], onDelete: Cascade)
-  user     User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  fortress Fortress          @relation(fields: [fortressId], references: [id], onDelete: Cascade)
+  user     User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  parent   FortressComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  FortressComment[] @relation("CommentReplies")
+
+  @@index([fortressId, parentId])
 }
 
 model FortressSubmission {

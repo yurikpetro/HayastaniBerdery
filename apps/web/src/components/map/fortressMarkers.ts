@@ -100,16 +100,24 @@ export function buildFortressPopupHtml(
   fortress: Fortress,
   locale: Locale,
   localizedFn: (text: LocalizedText, locale: Locale) => string,
+  detailsLabel: string,
 ) {
   const photo = primaryPhoto(fortress)
   const name = localizedFn(fortress.name, locale)
   const summary = localizedFn(fortress.summary, locale)
+  const href = `/fortress/${encodeURIComponent(fortress.slug)}`
 
   return `
-    <div style="min-width:200px">
-      ${photo ? `<img src="${escapeHtml(photo.url)}" alt="" style="width:100%;height:100px;object-fit:cover;border-radius:8px;margin-bottom:8px"/>` : ''}
-      <strong>${escapeHtml(name)}</strong>
-      <p style="margin:8px 0;font-size:13px">${escapeHtml(summary)}</p>
-    </div>
+    <a
+      href="${escapeHtml(href)}"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="fortress-map-popup"
+    >
+      ${photo ? `<img src="${escapeHtml(photo.url)}" alt="" loading="lazy" decoding="async" />` : ''}
+      <strong class="fortress-map-popup__title">${escapeHtml(name)}</strong>
+      <p class="fortress-map-popup__summary">${escapeHtml(summary)}</p>
+      <span class="fortress-map-popup__cta">${escapeHtml(detailsLabel)} →</span>
+    </a>
   `
 }

@@ -117,10 +117,11 @@ export function mapComment(comment: PrismaComment): FortressComment {
   return {
     id: comment.id,
     fortressId: comment.fortressId,
+    parentId: comment.parentId,
     author: comment.authorName,
     body: comment.body,
     status: comment.status as FortressComment['status'],
-    createdAt: comment.createdAt.toISOString().slice(0, 10),
+    createdAt: comment.createdAt.toISOString(),
   }
 }
 
