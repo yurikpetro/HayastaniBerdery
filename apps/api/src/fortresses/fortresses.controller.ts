@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import type { Fortress, FortressListQuery } from '@hayastani/shared'
-import { Roles, RolesGuard } from '../auth/roles.guard'
+import { ContentRoles, RolesGuard } from '../auth/roles.guard'
 import { FortressesService } from './fortresses.service'
 
 @Controller('fortresses')
@@ -34,14 +34,14 @@ export class FortressesController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'moderator')
+  @ContentRoles()
   create(@Body() body: Fortress, @Req() req: { user: { id: string } }) {
     return this.fortressesService.create(body, req.user.id)
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'moderator')
+  @ContentRoles()
   update(
     @Param('id') id: string,
     @Body() body: Fortress,
@@ -52,7 +52,7 @@ export class FortressesController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'moderator')
+  @ContentRoles()
   remove(@Param('id') id: string, @Req() req: { user: { id: string } }) {
     return this.fortressesService.remove(id, req.user.id)
   }

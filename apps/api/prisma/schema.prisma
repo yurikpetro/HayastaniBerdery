@@ -11,6 +11,7 @@ enum UserRole {
   user
   moderator
   admin
+  super_admin
 }
 
 enum GeographicScope {
@@ -100,17 +101,23 @@ enum CommentStatus {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String    @id @default(cuid())
+  email        String    @unique
   passwordHash String
   name         String
-  role         UserRole @default(user)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  role         UserRole  @default(user)
+  isBanned     Boolean   @default(false)
+  bannedAt     DateTime?
+  bannedReason String?
+  bannedById   String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   comments    FortressComment[]
   submissions FortressSubmission[]
   auditLogs   AuditLog[]
+  bannedBy    User?      @relation("UserBans", fields: [bannedById], references: [id], onDelete: SetNull)
+  bannedUsers User[]     @relation("UserBans")
 }
 
 model Fortress {

@@ -1,6 +1,10 @@
 import type {
   AuthTokens,
   AuthUser,
+  AdminUser,
+  AdminComment,
+  BanUserDto,
+  CommentStatus,
   CreateCommentDto,
   CreateSubmissionDto,
   Fortress,
@@ -11,6 +15,8 @@ import type {
   PaginatedResult,
   RegisterDto,
   SubmissionStatus,
+  UpdateUserRoleDto,
+  UserListQuery,
 } from '@hayastani/shared'
 
 const API_BASE = '/api'
@@ -85,6 +91,14 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(dto),
       }),
+    adminList: () => request<AdminComment[]>('/comments'),
+    updateStatus: (id: string, status: CommentStatus) =>
+      request<FortressComment>(`/comments/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status }),
+      }),
+    delete: (id: string) =>
+      request<{ id: string; deleted: true }>(`/comments/${id}`, { method: 'DELETE' }),
   },
   submissions: {
     list: () => request<FortressSubmission[]>('/submissions'),
@@ -101,6 +115,27 @@ export const api = {
   },
   audit: {
     list: () => request<unknown[]>('/audit'),
+  },
+  users: {
+    list: (query: UserListQuery = {}) => {
+      const params = new URLSearchParams()
+      Object.entries(query).forEach(([key, value]) => {
+        if (value != null && value !== '') params.set(key, String(value))
+      })
+      return request<PaginatedResult<AdminUser>>(`/users?${params}`)
+    },
+    byId: (id: string) => request<AdminUser>(`/users/${id}`),
+    updateRole: (id: string, dto: UpdateUserRoleDto) =>
+      request<AdminUser>(`/users/${id}/role`, {
+        method: 'PATCH',
+        body: JSON.stringify(dto),
+      }),
+    ban: (id: string, dto: BanUserDto) =>
+      request<AdminUser>(`/users/${id}/ban`, {
+        method: 'PATCH',
+        body: JSON.stringify(dto),
+      }),
+    unban: (id: string) => request<AdminUser>(`/users/${id}/unban`, { method: 'PATCH' }),
   },
   media: {
     upload: async (file: File) => {

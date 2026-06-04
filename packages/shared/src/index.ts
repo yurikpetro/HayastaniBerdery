@@ -67,7 +67,7 @@ export type SubmissionStatus =
 
 export type CommentStatus = 'published' | 'hidden' | 'review'
 
-export type UserRole = 'user' | 'moderator' | 'admin'
+export type UserRole = 'user' | 'moderator' | 'admin' | 'super_admin'
 
 export interface Coordinates {
   lat: number
@@ -102,6 +102,12 @@ export interface FortressComment {
   body: string
   status: CommentStatus
   createdAt: string
+}
+
+export interface AdminComment extends FortressComment {
+  fortressSlug?: string
+  userId?: string | null
+  userEmail?: string | null
 }
 
 export interface Fortress {
@@ -148,6 +154,39 @@ export interface AuthUser {
   email: string
   name: string
   role: UserRole
+  isBanned?: boolean
+}
+
+export interface AdminUser {
+  id: string
+  email: string
+  name: string
+  role: UserRole
+  isBanned: boolean
+  bannedAt?: string
+  bannedReason?: string
+  bannedBy?: Pick<AuthUser, 'id' | 'email' | 'name'> | null
+  createdAt: string
+  updatedAt: string
+  commentsCount?: number
+  submissionsCount?: number
+  auditLogsCount?: number
+}
+
+export interface UserListQuery {
+  search?: string
+  role?: UserRole
+  banned?: boolean
+  page?: number
+  limit?: number
+}
+
+export interface UpdateUserRoleDto {
+  role: UserRole
+}
+
+export interface BanUserDto {
+  reason?: string
 }
 
 export interface AuthTokens {

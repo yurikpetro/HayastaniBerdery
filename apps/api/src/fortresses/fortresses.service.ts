@@ -85,7 +85,7 @@ export class FortressesService {
         fortressId: record.id,
         userId,
         action: 'fortress.created',
-        details: { slug: record.slug },
+        details: { slug: record.slug, status: record.status },
       },
     })
 
@@ -108,12 +108,23 @@ export class FortressesService {
       include,
     })
 
+    const action =
+      existing.status !== 'archived' && payload.status === 'archived'
+        ? 'fortress.archived'
+        : existing.status === 'archived' && payload.status !== 'archived'
+          ? 'fortress.restored'
+          : 'fortress.updated'
+
     await this.prisma.auditLog.create({
       data: {
         fortressId: id,
         userId,
-        action: 'fortress.updated',
-        details: { slug: record.slug },
+        action,
+        details: {
+          slug: record.slug,
+          previousStatus: existing.status,
+          status: record.status,
+        },
       },
     })
 
@@ -130,7 +141,7 @@ export class FortressesService {
           fortressId: id,
           userId,
           action: 'fortress.deleted',
-          details: { slug: existing.slug },
+          details: { slug: existing.slug, status: existing.status },
         },
       }),
       this.prisma.fortress.delete({ where: { id } }),

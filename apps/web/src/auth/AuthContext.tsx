@@ -13,7 +13,12 @@ interface AuthContextValue {
   login: (dto: LoginDto) => Promise<void>
   register: (dto: RegisterDto) => Promise<void>
   logout: () => void
+  isModerator: boolean
   isAdmin: boolean
+  isSuperAdmin: boolean
+  canManageUsers: boolean
+  canAssignAdmins: boolean
+  canBanUsers: boolean
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -24,7 +29,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       user,
-      isAdmin: user?.role === 'admin' || user?.role === 'moderator',
+      isModerator:
+        user?.role === 'moderator' || user?.role === 'admin' || user?.role === 'super_admin',
+      isAdmin: user?.role === 'admin' || user?.role === 'super_admin',
+      isSuperAdmin: user?.role === 'super_admin',
+      canManageUsers: user?.role === 'admin' || user?.role === 'super_admin',
+      canAssignAdmins: user?.role === 'super_admin',
+      canBanUsers: user?.role === 'admin' || user?.role === 'super_admin',
       async login(dto: LoginDto) {
         const session = await api.auth.login(dto)
         saveSession(session)

@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import type { CreateCommentDto, FortressComment } from '@hayastani/shared'
+import type { AdminComment, CommentStatus, CreateCommentDto, FortressComment } from '@hayastani/shared'
 import { sanitizeCommentBody } from '../utils/commentBody'
 import { mapComment } from '../mappers'
 import { PrismaService } from '../prisma/prisma.service'
@@ -22,6 +22,30 @@ export class CommentsService {
       orderBy: { createdAt: 'asc' },
     })
     return records.map(mapComment)
+  }
+
+  async findAllForAdmin(): Promise<AdminComment[]> {
+    const records = await this.prisma.fortressComment.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 200,
+      include: {
+        fortress: { select: { slug: true } },
+        user: { select: { id: true, email: true } },
+      },
+    })
+
+    return records.map((comment) => ({
+      id: comment.id,
+      fortressId: comment.fortressId,
+      parentId: comment.parentId,
+      author: comment.authorName,
+      body: comment.body,
+      status: comment.status as CommentStatus,
+      createdAt: comment.createdAt.toISOString(),
+      fortressSlug: comment.fortress.slug,
+      userId: comment.user?.id ?? null,
+      userEmail: comment.user?.email ?? null,
+    }))
   }
 
   /** Depth of a comment: root = 0, each reply +1 */
@@ -77,5 +101,53 @@ export class CommentsService {
     })
 
     return mapComment(record)
+  }
+
+  async updateStatus(
+    id: string,
+    status: CommentStatus,
+    moderatorId?: string,
+  ): Promise<FortressComment> {
+    const existing = await this.prisma.fortressComment.findUnique({ where: { id } })
+    if (!existing) throw new NotFoundException('Comment not found')
+
+    const record = await this.prisma.fortressComment.update({
+      where: { id },
+      data: { status },
+    })
+
+    await this.prisma.auditLog.create({
+      data: {
+        fortressId: record.fortressId,
+        userId: moderatorId,
+        action: 'comment.status_changed',
+        details: {
+          commentId: record.id,
+          previousStatus: existing.status,
+          status: record.status,
+        },
+      },
+    })
+
+    return mapComment(record)
+  }
+
+  async remove(id: string, moderatorId?: string): Promise<{ id: string; deleted: true }> {
+    const existing = await this.prisma.fortressComment.findUnique({ where: { id } })
+    if (!existing) throw new NotFoundException('Comment not found')
+
+    await this.prisma.$transaction([
+      this.prisma.auditLog.create({
+        data: {
+          fortressId: existing.fortressId,
+          userId: moderatorId,
+          action: 'comment.deleted',
+          details: { commentId: existing.id, authorName: existing.authorName },
+        },
+      }),
+      this.prisma.fortressComment.delete({ where: { id } }),
+    ])
+
+    return { id, deleted: true }
   }
 }

@@ -147,6 +147,8 @@
     "backToSite": "На сайт",
     "submissions": "Заявки",
     "fortresses": "Крепости",
+    "comments": "Комментарии",
+    "users": "Пользователи",
     "audit": "Журнал изменений",
     "accept": "Опубликовать",
     "reject": "Отклонить",
@@ -172,6 +174,71 @@
     "confirmDelete": "Да, удалить навсегда",
     "deleting": "Удаление...",
     "actionFailed": "Действие не выполнено"
+  },
+  "adminAudit": {
+    "user": "Пользователь",
+    "system": "Система",
+    "status": "Статус",
+    "previousStatus": "Предыдущий статус",
+    "notAvailable": "Нет данных",
+    "unknownFortress": "Крепость не указана",
+    "actions": {
+      "fortress.created": "Создание",
+      "fortress.updated": "Редактирование",
+      "fortress.archived": "Архивирование",
+      "fortress.restored": "Возврат из архива",
+      "fortress.deleted": "Удаление",
+      "user.banned": "Бан пользователя",
+      "user.unbanned": "Разбан пользователя",
+      "user.role_changed": "Смена роли",
+      "comment.status_changed": "Статус комментария",
+      "comment.deleted": "Удаление комментария"
+    }
+  },
+  "adminComments": {
+    "guest": "Гость",
+    "delete": "Удалить",
+    "deleteConfirm": "Удалить комментарий навсегда?"
+  },
+  "adminCommentStatuses": {
+    "published": "Опубликован",
+    "hidden": "Скрыт",
+    "review": "На проверке"
+  },
+  "adminRoles": {
+    "user": "Пользователь",
+    "moderator": "Модератор",
+    "admin": "Админ",
+    "super_admin": "Главный админ"
+  },
+  "adminUsers": {
+    "search": "Поиск по имени или email",
+    "allRoles": "Все роли",
+    "allStatuses": "Все статусы",
+    "active": "Активен",
+    "banned": "Забанен",
+    "user": "Пользователь",
+    "role": "Роль",
+    "status": "Статус",
+    "activity": "Активность",
+    "comments": "Комментарии",
+    "submissions": "Заявки",
+    "auditLogs": "События аудита",
+    "ban": "Забанить",
+    "unban": "Разбанить",
+    "banTitle": "Забанить пользователя",
+    "banReason": "Причина бана",
+    "confirmBan": "Забанить",
+    "banning": "Бан...",
+    "cancel": "Отмена",
+    "roleLocked": "Эту роль нельзя изменить",
+    "banLocked": "Недостаточно прав для бана или разбана этого пользователя",
+    "actionFailed": "Действие не выполнено",
+    "backToUsers": "Назад к пользователям",
+    "createdAt": "Создан",
+    "updatedAt": "Обновлён",
+    "bannedAt": "Дата бана",
+    "bannedBy": "Кем забанен"
   },
   "adminForm": {
     "sections": {

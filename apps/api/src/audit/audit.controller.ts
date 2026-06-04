@@ -1,6 +1,6 @@
 import { Controller, Get, Inject, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { Roles, RolesGuard } from '../auth/roles.guard'
+import { RolesGuard, UserAdminRoles } from '../auth/roles.guard'
 import { PrismaService } from '../prisma/prisma.service'
 
 @Controller('audit')
@@ -9,7 +9,7 @@ export class AuditController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'moderator')
+  @UserAdminRoles()
   async findAll() {
     return this.prisma.auditLog.findMany({
       orderBy: { createdAt: 'desc' },

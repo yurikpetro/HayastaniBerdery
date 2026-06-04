@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import type { CreateSubmissionDto, SubmissionStatus } from '@hayastani/shared'
-import { Roles, RolesGuard } from '../auth/roles.guard'
+import { ContentRoles, RolesGuard } from '../auth/roles.guard'
 import { SubmissionsService } from './submissions.service'
 
 @Controller('submissions')
@@ -22,7 +22,7 @@ export class SubmissionsController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'moderator')
+  @ContentRoles()
   findAll() {
     return this.submissionsService.findAll()
   }
@@ -38,7 +38,7 @@ export class SubmissionsController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'moderator')
+  @ContentRoles()
   updateStatus(
     @Param('id') id: string,
     @Body() body: { status: SubmissionStatus; moderatorNote?: string },

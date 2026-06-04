@@ -4,8 +4,8 @@ import { useAuth } from '../../auth/AuthContext'
 
 export function AdminLayout() {
   const { t } = useTranslation()
-  const { isAdmin, logout } = useAuth()
-  if (!isAdmin) return <Navigate to="/login" replace />
+  const { isModerator, canManageUsers, logout } = useAuth()
+  if (!isModerator) return <Navigate to="/login" replace />
 
   return (
     <div className="mx-auto min-h-screen max-w-7xl px-4 py-6 lg:px-6">
@@ -16,7 +16,9 @@ export function AdminLayout() {
             {[
               ['/admin/submissions', 'admin.submissions'],
               ['/admin/fortresses', 'admin.fortresses'],
-              ['/admin/audit', 'admin.audit'],
+              ['/admin/comments', 'admin.comments'],
+              ...(canManageUsers ? [['/admin/audit', 'admin.audit']] : []),
+              ...(canManageUsers ? [['/admin/users', 'admin.users']] : []),
             ].map(([to, key]) => (
               <NavLink
                 key={to}

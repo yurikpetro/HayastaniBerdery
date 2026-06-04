@@ -6,6 +6,7 @@ import { FortressesModule } from './fortresses/fortresses.module'
 import { MediaModule } from './media/media.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { SubmissionsModule } from './submissions/submissions.module'
+import { UsersModule } from './users/users.module'
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SubmissionsModule } from './submissions/submissions.module'
     CommentsModule,
     MediaModule,
     AuditModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

@@ -1,10 +1,13 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { SiteLayout } from './components/layout/SiteLayout'
 import { AdminAuditPage } from './pages/admin/AdminAuditPage'
+import { AdminCommentsPage } from './pages/admin/AdminCommentsPage'
 import { AdminFortressEditorPage } from './pages/admin/AdminFortressEditorPage'
 import { AdminFortressesPage } from './pages/admin/AdminFortressesPage'
 import { AdminLayout } from './pages/admin/AdminLayout'
 import { AdminSubmissionsPage } from './pages/admin/AdminSubmissionsPage'
+import { AdminUserDetailsPage } from './pages/admin/AdminUserDetailsPage'
+import { AdminUsersPage } from './pages/admin/AdminUsersPage'
 import { AboutPage } from './pages/AboutPage'
 import { CatalogPage } from './pages/CatalogPage'
 import { FortressPage } from './pages/FortressPage'
@@ -34,7 +37,10 @@ export default function App() {
           <Route path="fortresses" element={<AdminFortressesPage />} />
           <Route path="fortresses/new" element={<AdminFortressEditorPage mode="create" />} />
           <Route path="fortresses/:slug/edit" element={<AdminFortressEditorPage mode="edit" />} />
+          <Route path="comments" element={<AdminCommentsPage />} />
           <Route path="audit" element={<AdminAuditPage />} />
+          <Route path="users" element={<AdminUsersPage />} />
+          <Route path="users/:id" element={<AdminUserDetailsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

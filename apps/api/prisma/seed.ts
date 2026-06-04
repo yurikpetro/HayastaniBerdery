@@ -69,6 +69,30 @@ async function replaceFortress(f: Fortress) {
 }
 
 async function main() {
+  const superAdminEmail = process.env.SUPER_ADMIN_EMAIL
+  const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD
+  const superAdminName = process.env.SUPER_ADMIN_NAME ?? 'Super Admin'
+  if (superAdminEmail && superAdminPassword) {
+    await prisma.user.upsert({
+      where: { email: superAdminEmail },
+      update: {
+        name: superAdminName,
+        passwordHash: await bcrypt.hash(superAdminPassword, 10),
+        role: 'super_admin',
+        isBanned: false,
+        bannedAt: null,
+        bannedReason: null,
+        bannedById: null,
+      },
+      create: {
+        email: superAdminEmail,
+        name: superAdminName,
+        passwordHash: await bcrypt.hash(superAdminPassword, 10),
+        role: 'super_admin',
+      },
+    })
+  }
+
   const passwordHash = await bcrypt.hash('admin123', 10)
   await prisma.user.upsert({
     where: { email: 'admin@hayastani.am' },

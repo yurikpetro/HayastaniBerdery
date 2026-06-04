@@ -30,6 +30,7 @@ export class AuthService {
   async login(dto: LoginDto): Promise<AuthTokens & { user: AuthUser }> {
     const user = await this.prisma.user.findUnique({ where: { email: dto.email } })
     if (!user) throw new UnauthorizedException('Invalid credentials')
+    if (user.isBanned) throw new UnauthorizedException('User is banned')
 
     const valid = await bcrypt.compare(dto.password, user.passwordHash)
     if (!valid) throw new UnauthorizedException('Invalid credentials')
@@ -44,6 +45,7 @@ export class AuthService {
       }) as { sub: string }
       const user = await this.prisma.user.findUnique({ where: { id: payload.sub } })
       if (!user) throw new UnauthorizedException()
+      if (user.isBanned) throw new UnauthorizedException('User is banned')
       return this.issueTokens(user)
     } catch {
       throw new UnauthorizedException('Invalid refresh token')
@@ -55,12 +57,14 @@ export class AuthService {
     email: string
     name: string
     role: string
+    isBanned: boolean
   }): AuthTokens & { user: AuthUser } {
     const authUser: AuthUser = {
       id: user.id,
       email: user.email,
       name: user.name,
       role: user.role as AuthUser['role'],
+      isBanned: user.isBanned,
     }
     const accessToken = this.jwt.sign(
       { sub: user.id, role: user.role },

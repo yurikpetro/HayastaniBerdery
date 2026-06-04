@@ -1,0 +1,12 @@
+ALTER TYPE "UserRole" ADD VALUE IF NOT EXISTS 'super_admin';
+
+ALTER TABLE "User"
+  ADD COLUMN "isBanned" BOOLEAN NOT NULL DEFAULT false,
+  ADD COLUMN "bannedAt" TIMESTAMP(3),
+  ADD COLUMN "bannedReason" TEXT,
+  ADD COLUMN "bannedById" TEXT;
+
+ALTER TABLE "User"
+  ADD CONSTRAINT "User_bannedById_fkey"
+  FOREIGN KEY ("bannedById") REFERENCES "User"("id")
+  ON DELETE SET NULL ON UPDATE CASCADE;

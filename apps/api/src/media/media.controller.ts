@@ -19,7 +19,7 @@ if (!existsSync(uploadDir)) mkdirSync(uploadDir, { recursive: true })
 export class MediaController {
   @Post('upload')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin', 'moderator', 'user')
+  @Roles('user', 'moderator', 'admin', 'super_admin')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({

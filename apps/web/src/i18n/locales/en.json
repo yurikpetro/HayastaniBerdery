@@ -143,6 +143,8 @@
     "backToSite": "Back to site",
     "submissions": "Submissions",
     "fortresses": "Fortresses",
+    "comments": "Comments",
+    "users": "Users",
     "audit": "Audit log",
     "accept": "Publish",
     "reject": "Reject",
@@ -168,6 +170,71 @@
     "confirmDelete": "Yes, delete forever",
     "deleting": "Deleting...",
     "actionFailed": "Action failed"
+  },
+  "adminAudit": {
+    "user": "User",
+    "system": "System",
+    "status": "Status",
+    "previousStatus": "Previous status",
+    "notAvailable": "No data",
+    "unknownFortress": "Fortress not specified",
+    "actions": {
+      "fortress.created": "Created",
+      "fortress.updated": "Edited",
+      "fortress.archived": "Archived",
+      "fortress.restored": "Restored from archive",
+      "fortress.deleted": "Deleted",
+      "user.banned": "User banned",
+      "user.unbanned": "User unbanned",
+      "user.role_changed": "Role changed",
+      "comment.status_changed": "Comment status",
+      "comment.deleted": "Comment deleted"
+    }
+  },
+  "adminComments": {
+    "guest": "Guest",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this comment forever?"
+  },
+  "adminCommentStatuses": {
+    "published": "Published",
+    "hidden": "Hidden",
+    "review": "In review"
+  },
+  "adminRoles": {
+    "user": "User",
+    "moderator": "Moderator",
+    "admin": "Admin",
+    "super_admin": "Main admin"
+  },
+  "adminUsers": {
+    "search": "Search by name or email",
+    "allRoles": "All roles",
+    "allStatuses": "All statuses",
+    "active": "Active",
+    "banned": "Banned",
+    "user": "User",
+    "role": "Role",
+    "status": "Status",
+    "activity": "Activity",
+    "comments": "Comments",
+    "submissions": "Submissions",
+    "auditLogs": "Audit events",
+    "ban": "Ban",
+    "unban": "Unban",
+    "banTitle": "Ban user",
+    "banReason": "Ban reason",
+    "confirmBan": "Ban",
+    "banning": "Banning...",
+    "cancel": "Cancel",
+    "roleLocked": "This role cannot be changed",
+    "banLocked": "You do not have permission to ban or unban this user",
+    "actionFailed": "Action failed",
+    "backToUsers": "Back to users",
+    "createdAt": "Created",
+    "updatedAt": "Updated",
+    "bannedAt": "Banned at",
+    "bannedBy": "Banned by"
   },
   "adminForm": {
     "sections": {

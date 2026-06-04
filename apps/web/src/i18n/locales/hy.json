@@ -143,6 +143,8 @@
     "backToSite": "Կայք",
     "submissions": "Հայտեր",
     "fortresses": "Բերդեր",
+    "comments": "Մեկնաբանություններ",
+    "users": "Օգտատերեր",
     "audit": "Փոփոխությունների մատյան",
     "accept": "Հրապարակել",
     "reject": "Մերժել",
@@ -168,6 +170,71 @@
     "confirmDelete": "Այո, ջնջել ընդմիշտ",
     "deleting": "Ջնջվում է...",
     "actionFailed": "Գործողությունը չհաջողվեց"
+  },
+  "adminAudit": {
+    "user": "Օգտատեր",
+    "system": "Համակարգ",
+    "status": "Կարգավիճակ",
+    "previousStatus": "Նախորդ կարգավիճակ",
+    "notAvailable": "Տվյալ չկա",
+    "unknownFortress": "Բերդը նշված չէ",
+    "actions": {
+      "fortress.created": "Ստեղծում",
+      "fortress.updated": "Խմբագրում",
+      "fortress.archived": "Արխիվացում",
+      "fortress.restored": "Վերադարձ արխիվից",
+      "fortress.deleted": "Ջնջում",
+      "user.banned": "Օգտատիրոջ արգելափակում",
+      "user.unbanned": "Օգտատիրոջ ապարգելափակում",
+      "user.role_changed": "Դերի փոփոխություն",
+      "comment.status_changed": "Մեկնաբանության կարգավիճակ",
+      "comment.deleted": "Մեկնաբանության ջնջում"
+    }
+  },
+  "adminComments": {
+    "guest": "Հյուր",
+    "delete": "Ջնջել",
+    "deleteConfirm": "Ջնջե՞լ այս մեկնաբանությունը ընդմիշտ"
+  },
+  "adminCommentStatuses": {
+    "published": "Հրապարակված",
+    "hidden": "Թաքցված",
+    "review": "Ստուգման մեջ"
+  },
+  "adminRoles": {
+    "user": "Օգտատեր",
+    "moderator": "Մոդերատոր",
+    "admin": "Ադմին",
+    "super_admin": "Գլխավոր ադմին"
+  },
+  "adminUsers": {
+    "search": "Որոնել անունով կամ email-ով",
+    "allRoles": "Բոլոր դերերը",
+    "allStatuses": "Բոլոր կարգավիճակները",
+    "active": "Ակտիվ",
+    "banned": "Արգելափակված",
+    "user": "Օգտատեր",
+    "role": "Դեր",
+    "status": "Կարգավիճակ",
+    "activity": "Ակտիվություն",
+    "comments": "Մեկնաբանություններ",
+    "submissions": "Հայտեր",
+    "auditLogs": "Աուդիտի իրադարձություններ",
+    "ban": "Արգելափակել",
+    "unban": "Ապարգելափակել",
+    "banTitle": "Արգելափակել օգտատիրոջը",
+    "banReason": "Արգելափակման պատճառ",
+    "confirmBan": "Արգելափակել",
+    "banning": "Արգելափակվում է...",
+    "cancel": "Չեղարկել",
+    "roleLocked": "Այս դերը հնարավոր չէ փոխել",
+    "banLocked": "Այս օգտատիրոջը արգելափակելու կամ ապարգելափակելու իրավունք չկա",
+    "actionFailed": "Գործողությունը չհաջողվեց",
+    "backToUsers": "Վերադառնալ օգտատերերին",
+    "createdAt": "Ստեղծվել է",
+    "updatedAt": "Թարմացվել է",
+    "bannedAt": "Արգելափակման ամսաթիվ",
+    "bannedBy": "Ով է արգելափակել"
   },
   "adminForm": {
     "sections": {
