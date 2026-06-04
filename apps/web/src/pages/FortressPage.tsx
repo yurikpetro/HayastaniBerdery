@@ -114,7 +114,7 @@ export function FortressPage() {
   return (
     <>
       <Helmet>
-        <title>{title} — Hayastani Berdry</title>
+        <title>{title} — {t('brand')}</title>
         <meta name="description" content={localized(fortress.summary, locale)} />
         {hero ? <meta property="og:image" content={hero.url} /> : null}
       </Helmet>

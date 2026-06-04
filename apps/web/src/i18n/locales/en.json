@@ -1,5 +1,5 @@
 {
-  "brand": "Hayastani Berdry",
+  "brand": "HayBerd",
   "tagline": "A public registry of Armenian fortresses with a map, sources, and community contributions",
   "nav": {
     "map": "Map",
@@ -80,7 +80,7 @@
   "about": {
     "eyebrow": "About the project",
     "title": "A living map of Armenian fortresses",
-    "intro": "Hayastani Berdry brings fortresses, defensive sites, and historical places into one shared registry: from well-known monuments to locations mostly remembered by local communities.",
+    "intro": "HayBerd brings fortresses, defensive sites, and historical places into one shared registry: from well-known monuments to locations mostly remembered by local communities.",
     "sideNote": "We preserve coordinates, historical context, photos, routes, and sources so Armenian heritage can be explored with more care and clarity.",
     "mapCta": "Open the map",
     "submitCta": "Submit a fortress",

@@ -1,4 +1,4 @@
-# Hayastani Berdry
+# HayBerd
 
 Interactive map and public registry of Armenian fortresses — v1 production stack.
 
