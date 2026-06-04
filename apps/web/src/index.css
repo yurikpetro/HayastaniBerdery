@@ -66,6 +66,14 @@ h3 {
   color: var(--color-stone-900);
 }
 
+.fortress-page__facts dd {
+  margin: 0;
+}
+
+.fortress-page__map-header {
+  background: linear-gradient(to bottom, rgb(250 247 242 / 0.95), rgb(250 247 242 / 0.75));
+}
+
 .comment-emoji-picker__grid {
   display: grid;
   grid-template-columns: repeat(8, 2rem);

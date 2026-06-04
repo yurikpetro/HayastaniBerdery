@@ -36,6 +36,8 @@
     "evidence": "Evidence",
     "coordAccuracy": "Coordinate accuracy",
     "location": "Map location",
+    "copyCoords": "Copy",
+    "coordsCopied": "Copied",
     "relatedPlaces": "Related places",
     "gallery": "Photos",
     "sourceLink": "Open",
@@ -75,7 +77,9 @@
     "allPeriods": "All periods",
     "allConditions": "All conditions",
     "reset": "Reset",
-    "found": "Found: {{count}}"
+    "found": "Found: {{count}}",
+    "noResultsTitle": "No fortresses found",
+    "noResultsText": "Try changing the filters or reset them to see more fortresses."
   },
   "about": {
     "eyebrow": "About the project",

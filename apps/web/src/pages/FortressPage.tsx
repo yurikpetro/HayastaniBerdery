@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -18,6 +18,7 @@ import {
   scopeLabels,
   typeLabels,
 } from '../lib/labels'
+import { formatFoundation } from '../lib/formatFoundation'
 
 const icon = new L.Icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -26,6 +27,87 @@ const icon = new L.Icon({
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 })
+
+function MetaBadge({
+  children,
+  variant = 'stone',
+}: {
+  children: ReactNode
+  variant?: 'forest' | 'stone' | 'terracotta' | 'amber'
+}) {
+  const styles = {
+    forest: 'bg-forest/12 text-forest',
+    stone: 'bg-stone-200/90 text-stone-800',
+    terracotta: 'bg-terracotta/12 text-terracotta-dark',
+    amber: 'bg-amber-100/90 text-amber-950',
+  }
+  return (
+    <span className={`rounded-full px-3 py-1 text-sm font-medium ${styles[variant]}`}>
+      {children}
+    </span>
+  )
+}
+
+function FortressFacts({
+  items,
+}: {
+  items: { label: string; value: string }[]
+}) {
+  return (
+    <dl className="fortress-page__facts grid grid-cols-1 gap-x-4 gap-y-3 border-b border-stone-200/80 pb-5 sm:grid-cols-[minmax(8rem,auto)_1fr]">
+      {items.map(({ label, value }) => (
+        <div key={label} className="contents">
+          <dt className="text-xs font-semibold uppercase tracking-wide text-stone-500">{label}</dt>
+          <dd className="font-medium leading-snug text-stone-900">{value}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
+function MapCoordsBar({
+  locationLabel,
+  lat,
+  lng,
+  copyLabel,
+  copiedLabel,
+}: {
+  locationLabel: string
+  lat: number
+  lng: number
+  copyLabel: string
+  copiedLabel: string
+}) {
+  const [copied, setCopied] = useState(false)
+  const coordsText = `${lat.toFixed(4)}, ${lng.toFixed(4)}`
+
+  const copyCoords = async () => {
+    try {
+      await navigator.clipboard.writeText(coordsText)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 2000)
+    } catch {
+      /* clipboard unavailable */
+    }
+  }
+
+  return (
+    <div className="fortress-page__map-header flex flex-col gap-2 border-b border-stone-200/80 px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-sm font-semibold text-stone-800">{locationLabel}</p>
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <span className="font-mono text-sm text-stone-600">{coordsText}</span>
+        <button
+          type="button"
+          onClick={copyCoords}
+          className="shrink-0 rounded-lg border border-stone-200 bg-stone-50 px-2.5 py-1 text-xs font-medium text-stone-700 transition hover:bg-stone-100"
+          aria-label={copyLabel}
+        >
+          {copied ? copiedLabel : copyLabel}
+        </button>
+      </div>
+    </div>
+  )
+}
 
 function ContentPanel({
   children,
@@ -80,27 +162,13 @@ export function FortressPage() {
     .map((item) => localized(item, locale))
     .filter(Boolean)
 
-  const metaItems = [
+  const locationFacts = [
     { label: t('fortressPage.marz'), value: localized(fortress.marz, locale) },
     {
       label: t('fortressPage.nearestSettlement'),
       value: localized(fortress.nearestSettlement, locale),
     },
-    { label: t('fortressPage.period'), value: localized(periodLabels[fortress.period], locale) },
-    { label: t('fortressPage.type'), value: localized(typeLabels[fortress.type], locale) },
-    {
-      label: t('fortressPage.condition'),
-      value: localized(conditionLabels[fortress.condition], locale),
-    },
-    {
-      label: t('fortressPage.accessibility'),
-      value: localized(accessibilityLabels[fortress.accessibility], locale),
-    },
-    { label: t('fortressPage.founded'), value: fortress.foundation },
-    {
-      label: t('fortressPage.coordinates'),
-      value: `${fortress.coordinates.lat.toFixed(4)}, ${fortress.coordinates.lng.toFixed(4)}`,
-    },
+    { label: t('fortressPage.founded'), value: formatFoundation(fortress.foundation, locale) },
     ...(fortress.altitudeMeters != null
       ? [
           {
@@ -171,13 +239,26 @@ export function FortressPage() {
           )}
 
           <div className="flex flex-wrap gap-2 border-b border-stone-200/80 px-5 py-4 sm:px-6">
-            <span className="rounded-full bg-forest/12 px-3 py-1 text-sm font-medium text-forest">
+            <MetaBadge variant="forest">
               {t('fortressPage.evidence')}: {localized(evidenceLabels[fortress.evidenceLevel], locale)}
-            </span>
-            <span className="rounded-full bg-stone-200/90 px-3 py-1 text-sm font-medium text-stone-800">
+            </MetaBadge>
+            <MetaBadge variant="stone">
               {t('fortressPage.coordAccuracy')}:{' '}
               {localized(accuracyLabels[fortress.coordinateAccuracy], locale)}
-            </span>
+            </MetaBadge>
+            <MetaBadge variant="terracotta">
+              {t('fortressPage.period')}: {localized(periodLabels[fortress.period], locale)}
+            </MetaBadge>
+            <MetaBadge variant="stone">
+              {t('fortressPage.type')}: {localized(typeLabels[fortress.type], locale)}
+            </MetaBadge>
+            <MetaBadge variant="forest">
+              {t('fortressPage.condition')}: {localized(conditionLabels[fortress.condition], locale)}
+            </MetaBadge>
+            <MetaBadge variant="amber">
+              {t('fortressPage.accessibility')}:{' '}
+              {localized(accessibilityLabels[fortress.accessibility], locale)}
+            </MetaBadge>
           </div>
 
           <p className="px-5 py-5 text-lg leading-relaxed text-stone-800 sm:px-6">
@@ -185,19 +266,9 @@ export function FortressPage() {
           </p>
         </section>
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {metaItems.map(({ label, value }) => (
-            <ContentPanel key={label} className="!p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">
-                {label}
-              </p>
-              <p className="mt-1 font-semibold leading-snug text-stone-900">{value}</p>
-            </ContentPanel>
-          ))}
-        </div>
-
         <section className="grid gap-6 lg:grid-cols-2">
           <ContentPanel className="space-y-5">
+            <FortressFacts items={locationFacts} />
             <div>
               <h2 className="font-display text-2xl font-bold text-stone-900">{t('history')}</h2>
               <p className="mt-3 leading-relaxed text-stone-700">
@@ -250,9 +321,13 @@ export function FortressPage() {
           </ContentPanel>
 
           <ContentPanel className="fortress-page__map overflow-hidden !p-0">
-            <p className="border-b border-stone-200/80 px-5 py-3 text-sm font-semibold text-stone-800">
-              {t('fortressPage.location')}
-            </p>
+            <MapCoordsBar
+              locationLabel={t('fortressPage.location')}
+              lat={fortress.coordinates.lat}
+              lng={fortress.coordinates.lng}
+              copyLabel={t('fortressPage.copyCoords')}
+              copiedLabel={t('fortressPage.coordsCopied')}
+            />
             <MapContainer
               center={[fortress.coordinates.lat, fortress.coordinates.lng]}
               zoom={12}

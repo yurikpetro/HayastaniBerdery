@@ -36,6 +36,8 @@
     "evidence": "Достоверность",
     "coordAccuracy": "Точность координат",
     "location": "Расположение на карте",
+    "copyCoords": "Копировать",
+    "coordsCopied": "Скопировано",
     "relatedPlaces": "Связанные места",
     "gallery": "Фотографии",
     "sourceLink": "Открыть",
@@ -79,7 +81,9 @@
     "allPeriods": "Все периоды",
     "allConditions": "Все состояния",
     "reset": "Сбросить",
-    "found": "Найдено: {{count}}"
+    "found": "Найдено: {{count}}",
+    "noResultsTitle": "Крепости не найдены",
+    "noResultsText": "Попробуйте изменить фильтры или сбросить их, чтобы увидеть больше крепостей."
   },
   "about": {
     "eyebrow": "О проекте",

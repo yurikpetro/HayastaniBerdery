@@ -11,7 +11,7 @@ import type {
 import { FortressPreview } from '../components/fortress/FortressPreview'
 import { getFortressYearRange } from '../components/map/mapTimeline'
 import { useFortresses } from '../hooks/useFortresses'
-import { conditionLabels, localized, periodLabels, scopeLabels, typeLabels } from '../lib/labels'
+import { catalogPeriodFilters, conditionLabels, localized, periodLabels, scopeLabels, typeLabels } from '../lib/labels'
 
 function matchesSearch(fortress: Fortress, locale: Locale, search: string) {
   if (!search.trim()) return true
@@ -131,7 +131,7 @@ export function CatalogPage() {
             className="rounded-xl border border-stone-300 bg-white/95 px-4 py-2 text-stone-900"
           >
             <option value="all">{t('catalogFilters.allPeriods')}</option>
-            {(Object.keys(periodLabels) as HistoricalPeriod[]).map((key) => (
+            {(catalogPeriodFilters).map((key) => (
               <option key={key} value={key}>
                 {localized(periodLabels[key], locale)}
               </option>
@@ -164,6 +164,22 @@ export function CatalogPage() {
 
       {isLoading ? (
         <p>{t('loading')}</p>
+      ) : filteredItems.length === 0 ? (
+        <div className="rounded-2xl border border-white/60 bg-white/85 p-8 text-center shadow-lg shadow-stone-900/10 backdrop-blur-md">
+          <h2 className="font-display text-2xl font-bold text-stone-900">
+            {t('catalogFilters.noResultsTitle')}
+          </h2>
+          <p className="mx-auto mt-2 max-w-xl text-stone-600">
+            {t('catalogFilters.noResultsText')}
+          </p>
+          <button
+            type="button"
+            onClick={resetFilters}
+            className="mt-5 rounded-xl bg-terracotta px-4 py-2 text-sm font-semibold text-white transition hover:bg-terracotta-dark"
+          >
+            {t('catalogFilters.reset')}
+          </button>
+        </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredItems.map((fortress) => (

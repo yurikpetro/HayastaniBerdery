@@ -55,6 +55,11 @@ export const periodLabels: Record<HistoricalPeriod, LocalizedText> = {
   unknown: { hy: 'Անհայտ', ru: 'Неизвестно', en: 'Unknown' },
 }
 
+/** Periods shown in catalog filters (excludes eras with no fortress entries). */
+export const catalogPeriodFilters = (Object.keys(periodLabels) as HistoricalPeriod[]).filter(
+  (period) => period !== 'bronze-age',
+)
+
 export const typeLabels: Record<FortressType, LocalizedText> = {
   fortress: { hy: 'Բերդ', ru: 'Крепость', en: 'Fortress' },
   'fortified-settlement': {

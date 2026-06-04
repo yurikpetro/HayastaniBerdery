@@ -36,6 +36,8 @@
     "evidence": "Հավաստիություն",
     "coordAccuracy": "Կոորդինատների ճշգրտություն",
     "location": "Քարտեզի վրա",
+    "copyCoords": "Պատճենել",
+    "coordsCopied": "Պատճենված է",
     "relatedPlaces": "Կապված վայրեր",
     "gallery": "Լուսանկարներ",
     "sourceLink": "Բացել",
@@ -75,7 +77,9 @@
     "allPeriods": "Բոլոր ժամանակաշրջանները",
     "allConditions": "Բոլոր վիճակները",
     "reset": "Մաքրել",
-    "found": "Գտնվել է՝ {{count}}"
+    "found": "Գտնվել է՝ {{count}}",
+    "noResultsTitle": "Բերդեր չեն գտնվել",
+    "noResultsText": "Փորձեք փոխել զտիչները կամ մաքրել դրանք՝ ավելի շատ բերդեր տեսնելու համար։"
   },
   "about": {
     "eyebrow": "Նախագծի մասին",
