@@ -24,6 +24,8 @@ Open http://localhost:5173
 
 **Admin:** `admin@hayastani.am` / `admin123`
 
+To use Timeweb Cloud PostgreSQL instead of local Docker Postgres, copy `apps/api/.env.timeweb.example` to `apps/api/.env` and follow [Timeweb PostgreSQL](docs/TIMEWEB_DATABASE.md).
+
 ## Scripts
 
 | Command | Description |
@@ -37,6 +39,7 @@ Open http://localhost:5173
 ## Documentation
 
 - [Database (PostgreSQL vs MySQL)](docs/DATABASE.md)
+- [Timeweb PostgreSQL](docs/TIMEWEB_DATABASE.md)
 - [Data model](docs/DATA_MODEL.md)
 - [Moderation](docs/MODERATION.md)
 - [Deployment](docs/DEPLOYMENT.md)

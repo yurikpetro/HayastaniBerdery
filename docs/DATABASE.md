@@ -19,6 +19,7 @@
 ## Local and production
 
 - **Dev:** `docker compose up -d` → PostgreSQL on `localhost:5432`, credentials in `apps/api/.env.example`.
+- **Timeweb Cloud:** managed PostgreSQL via `apps/api/.env.timeweb.example`; see [TIMEWEB_DATABASE.md](TIMEWEB_DATABASE.md).
 - **Prod:** `docker-compose.prod.yml` — same engine, set `POSTGRES_PASSWORD` and `DATABASE_URL`.
 
 ```bash

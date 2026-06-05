@@ -30,6 +30,7 @@ npm run dev:all
 
 - Web: http://localhost:5173
 - API: http://localhost:3000/api
+- Cloud DB: to use Timeweb PostgreSQL locally, copy `apps/api/.env.timeweb.example` to `apps/api/.env` instead of `apps/api/.env.example`; see [TIMEWEB_DATABASE.md](TIMEWEB_DATABASE.md).
 
 ### Карта: Google и Яндекс (опционально)
 
