@@ -1,6 +1,6 @@
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useMemo, useState } from 'react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import type { Fortress } from '@hayastani/shared'
 import { api } from '../../api/client'
@@ -10,23 +10,44 @@ import { useFortress } from '../../hooks/useFortresses'
 export function AdminFortressEditorPage({ mode }: { mode: 'create' | 'edit' }) {
   const { t } = useTranslation()
   const { slug = '' } = useParams()
+  const [searchParams] = useSearchParams()
+  const submissionId = searchParams.get('submissionId')
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const isCreate = mode === 'create'
   const emptyFortress = useMemo(() => createEmptyFortress(), [])
   const { data, isLoading } = useFortress(isCreate ? '' : slug)
+  const submissionQuery = useQuery({
+    queryKey: ['submission', submissionId],
+    queryFn: () => api.submissions.byId(submissionId!),
+    enabled: isCreate && Boolean(submissionId),
+  })
   const [saveMessage, setSaveMessage] = useState<
     { type: 'success' | 'error'; message: string } | null
   >(null)
 
   const save = useMutation({
-    mutationFn: (fortress: Fortress) =>
-      isCreate ? api.fortresses.create(fortress) : api.fortresses.update(fortress.id, fortress),
+    mutationFn: async (fortress: Fortress) => {
+      const saved = isCreate
+        ? await api.fortresses.create(fortress)
+        : await api.fortresses.update(fortress.id, fortress)
+      if (isCreate && submissionId) {
+        await api.submissions.updateStatus(
+          submissionId,
+          'accepted',
+          t('adminSubmissions.acceptedFromEditor'),
+          saved.id,
+        )
+      }
+      return saved
+    },
     onMutate: () => {
       setSaveMessage(null)
     },
     onSuccess: (saved) => {
       void queryClient.invalidateQueries({ queryKey: ['fortresses'] })
+      void queryClient.invalidateQueries({ queryKey: ['submissions'] })
+      if (submissionId) void queryClient.invalidateQueries({ queryKey: ['submission', submissionId] })
       void queryClient.invalidateQueries({ queryKey: ['fortress', saved.slug] })
       if (!isCreate && slug && slug !== saved.slug) {
         void queryClient.invalidateQueries({ queryKey: ['fortress', slug] })
@@ -42,10 +63,17 @@ export function AdminFortressEditorPage({ mode }: { mode: 'create' | 'edit' }) {
     },
   })
 
-  if (!isCreate && isLoading) return <p>{t('loading')}</p>
+  if ((!isCreate && isLoading) || (isCreate && submissionId && submissionQuery.isLoading)) {
+    return <p>{t('loading')}</p>
+  }
   if (!isCreate && !data) return <p>{t('empty')}</p>
 
-  const initialFortress = isCreate ? emptyFortress : data!
+  const initialFortress =
+    isCreate && submissionQuery.data
+      ? submissionQuery.data.proposedFortress
+      : isCreate
+        ? emptyFortress
+        : data!
 
   return (
     <div className="space-y-4">
@@ -57,6 +85,11 @@ export function AdminFortressEditorPage({ mode }: { mode: 'create' | 'edit' }) {
           <h3 className="mt-2 text-2xl font-bold">
             {isCreate ? t('adminForm.createTitle') : t('adminForm.editTitle')}
           </h3>
+          {submissionQuery.data ? (
+            <p className="mt-2 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">
+              {t('adminSubmissions.editorNotice', { id: submissionQuery.data.id })}
+            </p>
+          ) : null}
         </div>
         {!isCreate && data ? (
           <Link

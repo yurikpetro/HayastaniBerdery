@@ -1,5 +1,6 @@
 {
   "brand": "HayBerd",
+  "brandLabel": "Heritage Map",
   "tagline": "A public registry of Armenian fortresses with a map, sources, and community contributions",
   "nav": {
     "map": "Map",
@@ -129,6 +130,9 @@
     "note": "How do you know about this place?",
     "contact": "Contact for follow-up",
     "failed": "Failed to submit",
+    "success": "Your submission has been sent for moderation. An admin will review it before publication.",
+    "sending": "Sending...",
+    "openCatalog": "Open catalog",
     "send": "Send for moderation"
   },
   "auth": {
@@ -255,6 +259,28 @@
     "needs-changes": "Needs changes",
     "accepted": "Accepted",
     "rejected": "Rejected"
+  },
+  "adminSubmissions": {
+    "total_one": "{{count}} submission",
+    "total_other": "{{count}} submissions",
+    "search": "Search by name, slug, author, or text",
+    "allStatuses": "All statuses",
+    "scope": "Region",
+    "noSubmitterNote": "The user did not leave a note.",
+    "showDetails": "Show details",
+    "hideDetails": "Hide details",
+    "openEditor": "Open in editor",
+    "openPublished": "Open published",
+    "needsChangesTitle": "Request changes",
+    "rejectTitle": "Reject submission",
+    "moderatorNote": "Moderator note",
+    "statusUpdated": "Submission status updated",
+    "actionFailed": "Failed to update submission",
+    "saving": "Saving...",
+    "confirm": "Confirm",
+    "summary": "Summary",
+    "acceptedFromEditor": "Fortress was created from the submission after review in the editor.",
+    "editorNotice": "Editor opened from submission {{id}}. After saving, the submission will be marked accepted."
   },
   "adminActionDetails": {
     "email": "User",

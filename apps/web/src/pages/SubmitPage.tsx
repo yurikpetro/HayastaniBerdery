@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet'
 import type { Fortress } from '@hayastani/shared'
@@ -43,11 +43,12 @@ const emptyFortress = (): Omit<Fortress, 'id' | 'updatedAt' | 'status'> => ({
 export function SubmitPage() {
   const { t } = useTranslation()
   const { user } = useAuth()
-  const navigate = useNavigate()
   const [note, setNote] = useState('')
   const [draft, setDraft] = useState(emptyFortress())
   const [contact, setContact] = useState('')
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   if (!user) {
     return (
@@ -75,6 +76,9 @@ export function SubmitPage() {
         className="space-y-4 rounded-2xl border border-white/60 bg-white/85 p-6 shadow-xl shadow-stone-900/10 backdrop-blur-md"
         onSubmit={async (event) => {
           event.preventDefault()
+          setError('')
+          setSuccess('')
+          setIsSubmitting(true)
           try {
             const submitterNote = [
               note,
@@ -89,12 +93,25 @@ export function SubmitPage() {
                 sources: [],
               },
             })
-            navigate('/catalog')
+            setDraft(emptyFortress())
+            setNote('')
+            setContact('')
+            setSuccess(t('submitForm.success'))
           } catch (e) {
             setError(e instanceof Error ? e.message : t('submitForm.failed'))
+          } finally {
+            setIsSubmitting(false)
           }
         }}
       >
+        {success ? (
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+            <p>{success}</p>
+            <Link to="/catalog" className="mt-2 inline-flex font-medium text-emerald-900 underline">
+              {t('submitForm.openCatalog')}
+            </Link>
+          </div>
+        ) : null}
         <label className="block text-sm">
           {t('submitForm.name')}
           <input
@@ -175,9 +192,10 @@ export function SubmitPage() {
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
         <button
           type="submit"
-          className="rounded-full bg-forest px-5 py-2 text-white"
+          disabled={isSubmitting}
+          className="rounded-full bg-forest px-5 py-2 text-white disabled:opacity-60"
         >
-          {t('submitForm.send')}
+          {isSubmitting ? t('submitForm.sending') : t('submitForm.send')}
         </button>
       </form>
     </div>

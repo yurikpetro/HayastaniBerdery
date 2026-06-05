@@ -129,11 +129,14 @@ export function mapSubmission(submission: PrismaSubmission): FortressSubmission 
   return {
     id: submission.id,
     submittedBy: submission.submittedByName,
+    submittedByUserId: submission.userId,
     status: submission.status.replace(/_/g, '-') as FortressSubmission['status'],
     proposedFortress: submission.payload as unknown as SharedFortress,
     submitterNote: submission.submitterNote,
     moderatorNote: submission.moderatorNote ?? undefined,
-    createdAt: submission.createdAt.toISOString().slice(0, 10),
+    publishedId: submission.publishedId,
+    createdAt: submission.createdAt.toISOString(),
+    updatedAt: submission.updatedAt.toISOString(),
   }
 }
 

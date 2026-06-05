@@ -142,11 +142,14 @@ export interface Fortress {
 export interface FortressSubmission {
   id: string
   submittedBy: string
+  submittedByUserId?: string | null
   status: SubmissionStatus
   proposedFortress: Fortress
   submitterNote: string
   moderatorNote?: string
+  publishedId?: string | null
   createdAt: string
+  updatedAt: string
 }
 
 export interface AuthUser {

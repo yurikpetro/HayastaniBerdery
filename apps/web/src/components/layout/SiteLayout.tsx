@@ -59,7 +59,7 @@ export function SiteLayout() {
                   isMapHome ? 'text-white/70' : 'text-terracotta'
                 }`}
               >
-                Heritage Map
+                {t('brandLabel')}
               </p>
               <h1
                 className={`text-lg font-bold leading-tight ${

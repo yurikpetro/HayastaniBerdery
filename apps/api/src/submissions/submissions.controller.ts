@@ -27,6 +27,13 @@ export class SubmissionsController {
     return this.submissionsService.findAll()
   }
 
+  @Get(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ContentRoles()
+  findOne(@Param('id') id: string) {
+    return this.submissionsService.findOne(id)
+  }
+
   @Post()
   @UseGuards(AuthGuard('jwt'))
   create(
@@ -41,7 +48,7 @@ export class SubmissionsController {
   @ContentRoles()
   updateStatus(
     @Param('id') id: string,
-    @Body() body: { status: SubmissionStatus; moderatorNote?: string },
+    @Body() body: { status: SubmissionStatus; moderatorNote?: string; publishedId?: string },
     @Req() req: { user: { id: string } },
   ) {
     return this.submissionsService.updateStatus(
@@ -49,6 +56,7 @@ export class SubmissionsController {
       body.status,
       body.moderatorNote,
       req.user.id,
+      body.publishedId,
     )
   }
 }

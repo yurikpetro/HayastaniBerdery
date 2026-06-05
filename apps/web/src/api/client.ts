@@ -102,15 +102,21 @@ export const api = {
   },
   submissions: {
     list: () => request<FortressSubmission[]>('/submissions'),
+    byId: (id: string) => request<FortressSubmission>(`/submissions/${id}`),
     create: (dto: CreateSubmissionDto) =>
       request<FortressSubmission>('/submissions', {
         method: 'POST',
         body: JSON.stringify(dto),
       }),
-    updateStatus: (id: string, status: SubmissionStatus, moderatorNote?: string) =>
+    updateStatus: (
+      id: string,
+      status: SubmissionStatus,
+      moderatorNote?: string,
+      publishedId?: string,
+    ) =>
       request<FortressSubmission>(`/submissions/${id}`, {
         method: 'PATCH',
-        body: JSON.stringify({ status, moderatorNote }),
+        body: JSON.stringify({ status, moderatorNote, publishedId }),
       }),
   },
   audit: {
