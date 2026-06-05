@@ -468,7 +468,7 @@
   },
   "mapToponyms": {
     "artsakhLabels": "Armenian labels (Artsakh)",
-    "hint": "Labels drawn on top of the map. Provider labels on tiles are not replaced."
+    "hint": "Additional Armenian toponyms in Artsakh, localized as Armenian / Russian / English."
   },
   "mapTimeline": {
     "title": "Period",

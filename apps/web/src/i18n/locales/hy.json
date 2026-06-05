@@ -440,9 +440,9 @@
   "loading": "Բեռնվում է...",
   "mapLayers": {
     "groupMaptiler": "MapTiler",
-    "maptilerStreets": "Քարտեզ (հայ.)",
-    "maptilerHybrid": "Հիբրիդ (հայ.)",
-    "maptilerOutdoor": "Տոպո (հայ.)",
+    "maptilerStreets": "Քարտեզ (տեղ.)",
+    "maptilerHybrid": "Հիբրիդ (տեղ.)",
+    "maptilerOutdoor": "Տոպո (տեղ.)",
     "maptilerSatellite": "Արբանյակ",
     "groupOsm": "OSM",
     "groupGoogle": "Google",
@@ -468,7 +468,7 @@
   },
   "mapToponyms": {
     "artsakhLabels": "Հայերեն անվանումներ (Արցախ)",
-    "hint": "Լրացուցիչ հայերեն անուններ Արցախում. MapTiler (hy/ru)՝ OSM name:hy դաշտերից։"
+    "hint": "Արցախի լրացուցիչ հայկական տեղանուններ՝ հայերեն / ռուսերեն / անգլերեն։"
   },
   "mapTimeline": {
     "title": "Ժամանակաշրջան",

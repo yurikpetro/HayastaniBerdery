@@ -458,9 +458,9 @@
   "loading": "Загрузка...",
   "mapLayers": {
     "groupMaptiler": "MapTiler",
-    "maptilerStreets": "Схема (арм.)",
-    "maptilerHybrid": "Гибрид (арм.)",
-    "maptilerOutdoor": "Топо (арм.)",
+    "maptilerStreets": "Схема (лок.)",
+    "maptilerHybrid": "Гибрид (лок.)",
+    "maptilerOutdoor": "Топо (лок.)",
     "maptilerSatellite": "Спутник",
     "groupOsm": "OSM",
     "groupGoogle": "Google",
@@ -486,7 +486,7 @@
   },
   "mapToponyms": {
     "artsakhLabels": "Армянские названия (Арцах)",
-    "hint": "Доп. армянские названия в Арцахе поверх карты. MapTiler (hy/ru): подписи из OSM name:hy."
+    "hint": "Доп. армянские названия в Арцахе поверх карты: հայերեն / русский / English."
   },
   "mapTimeline": {
     "title": "Период",

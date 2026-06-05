@@ -10,12 +10,9 @@ const MAPTILER_STYLE_IDS: Record<MapTilerStyleId, string> = {
   satellite: 'satellite-v4',
 }
 
-/**
- * Язык подписей на тайлах MapTiler (поля OSM name:hy, name:ru, …).
- * Интерфейс по умолчанию — ru, но топонимы для hy и ru — армянские.
- */
 export function mapLocaleToMaptilerLanguage(locale: Locale) {
-  if (locale === 'hy' || locale === 'ru') return Language.ARMENIAN
+  if (locale === 'hy') return Language.ARMENIAN
+  if (locale === 'ru') return Language.RUSSIAN
   return Language.ENGLISH
 }
 
