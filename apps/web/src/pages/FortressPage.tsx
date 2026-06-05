@@ -4,8 +4,8 @@ import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Locale } from '@hayastani/shared'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
-import L from 'leaflet'
 import { FortressComments } from '../components/fortress/FortressComments'
+import { FORTRESS_MARKER_ICON } from '../components/map/fortressMarkers'
 import { useFortress } from '../hooks/useFortresses'
 import {
   accessibilityLabels,
@@ -19,14 +19,6 @@ import {
   typeLabels,
 } from '../lib/labels'
 import { formatFoundation } from '../lib/formatFoundation'
-
-const icon = new L.Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-})
 
 function MetaBadge({
   children,
@@ -336,7 +328,10 @@ export function FortressPage() {
               attributionControl={false}
             >
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              <Marker position={[fortress.coordinates.lat, fortress.coordinates.lng]} icon={icon} />
+              <Marker
+                position={[fortress.coordinates.lat, fortress.coordinates.lng]}
+                icon={FORTRESS_MARKER_ICON}
+              />
             </MapContainer>
           </ContentPanel>
         </section>
